@@ -1,0 +1,70 @@
+/* src/styles/global.css */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2D7A3F;
+  border-radius: 3px;
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  height: 6px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #5BAD5A;
+  cursor: pointer;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+/* Ensure the app's dark background fills the full viewport */
+body {
+  background: transparent !important;
+  display: block !important;
+  min-height: 100vh;
+  width: 100%;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: block;
+}
