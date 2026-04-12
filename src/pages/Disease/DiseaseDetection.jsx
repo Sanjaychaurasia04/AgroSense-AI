@@ -187,7 +187,7 @@ const DiseaseDetection = () => {
         <div className="hero-section">
           <div className="hero-content">
             <div className="hero-eyebrow">
-              <span className="eyebrow-icon">🤖</span>
+              <span className="eyebrow-icon"></span>
               Powered by Deep Learning
             </div>
             <h2>
@@ -300,7 +300,7 @@ const DiseaseDetection = () => {
         <div ref={resultsRef} className={`results-section ${results || error ? 'show' : ''}`}>
           {error && (
             <div className="error-card">
-              <div className="error-icon">⚠️</div>
+              <div className="error-icon"></div>
               <div className="error-content">
                 <h4>Analysis Failed</h4>
                 <p>{error}</p>
@@ -319,7 +319,7 @@ const DiseaseDetection = () => {
         {/* Footer */}
         <footer className="footer">
           <div className="footer-content">
-            <p>Built with ❤️ for farmers and gardeners</p>
+            <p>Built to help farmers and gardeners</p>
             <p className="footer-note">
               <strong>KrishiMitra AI</strong> · ResNet50 Plant Disease Detection · 
               For educational purposes only. Consult local experts for critical decisions.
