@@ -1,11 +1,54 @@
 // src/pages/Auth/AuthPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import Icon from '../../components/common/Icon';
+
+// ── Google Sign-In Button ─────────────────────────────────────
+const GoogleBtn = ({ onClick, loading }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    disabled={loading}
+    style={{
+      width: '100%', padding: '12px',
+      background: 'rgba(255,255,255,0.06)',
+      border: '1px solid rgba(255,255,255,0.15)',
+      borderRadius: 11, cursor: loading ? 'not-allowed' : 'pointer',
+      color: '#f0fdf4', fontFamily: "'Poppins', sans-serif",
+      fontSize: 14, fontWeight: 600,
+      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+      transition: 'all 0.22s',
+      opacity: loading ? 0.6 : 1,
+    }}
+    onMouseEnter={e => !loading && (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
+    onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
+  >
+    {/* Google "G" logo SVG */}
+    <svg width="18" height="18" viewBox="0 0 18 18">
+      <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+      <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+      <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+      <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+    </svg>
+    {loading ? 'Redirecting to Google…' : 'Continue with Google'}
+  </button>
+);
+
+// ── Divider ───────────────────────────────────────────────────
+const Divider = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
+    <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+    <span style={{ color: 'rgba(200,230,201,0.3)', fontSize: 11, fontFamily: "'Poppins', sans-serif" }}>
+      or continue with email
+    </span>
+    <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+  </div>
+);
 
 // ── Reusable input field ──────────────────────────────────────
 const Field = ({ label, type = 'text', placeholder, value, onChange, icon, error }) => {
   const [focused, setFocused] = useState(false);
-  const [showPw, setShowPw]   = useState(false);
+  const [showPw, setShowPw] = useState(false);
   const isPassword = type === 'password';
 
   return (
@@ -91,6 +134,14 @@ const SubmitBtn = ({ children, loading }) => (
 
 // ── Main AuthPage ─────────────────────────────────────────────
 const AuthPage = ({ onAuthSuccess, onBack }) => {
+  const {
+    loginWithRedirect,
+    isAuthenticated,
+    isLoading: auth0Loading,
+    user,
+    logout,
+  } = useAuth0();
+
   const [mode, setMode]       = useState('login');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -101,13 +152,33 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
   const [loginPassword, setLoginPassword] = useState('');
 
   // Register fields
-  const [regName, setRegName]       = useState('');
-  const [regPhone, setRegPhone]     = useState('');
-  const [regEmail, setRegEmail]     = useState('');
-  const [regPassword, setRegPassword]   = useState('');
-  const [regConfirm, setRegConfirm]     = useState('');
-  const [regState, setRegState]         = useState('');
-  const [regCrop, setRegCrop]           = useState('');
+  const [regName, setRegName]         = useState('');
+  const [regPhone, setRegPhone]       = useState('');
+  const [regEmail, setRegEmail]       = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [regConfirm, setRegConfirm]   = useState('');
+  const [regState, setRegState]       = useState('');
+  const [regCrop, setRegCrop]         = useState('');
+
+  // ── Handle Auth0 redirect callback ──
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setSuccess(true);
+      setTimeout(() => onAuthSuccess?.({ name: user.name, email: user.email, picture: user.picture }), 900);
+    }
+  }, [isAuthenticated, user]);
+
+  // ── Google login via Auth0 ──
+  const handleGoogleLogin = () => {
+    setLoading(true);
+    loginWithRedirect({
+      authorizationParams: {
+        connection: 'google-oauth2',   // tells Auth0 to use Google directly
+        prompt: 'select_account',      // always show account picker
+      },
+    });
+    // page will redirect, so no need to setLoading(false)
+  };
 
   const indianStates = [
     'Andhra Pradesh','Assam','Bihar','Chhattisgarh','Gujarat',
@@ -138,11 +209,13 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
     setErrors(e); return Object.keys(e).length === 0;
   };
 
+  // Email/password login — wire to your backend here
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validateLogin()) return;
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1200)); // TODO: replace with API call
+    // TODO: replace with real API call e.g. await api.login(loginEmail, loginPassword)
+    await new Promise(r => setTimeout(r, 1200));
     setLoading(false); setSuccess(true);
     setTimeout(() => onAuthSuccess?.({ name: loginEmail.split('@')[0], email: loginEmail }), 900);
   };
@@ -151,12 +224,30 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
     e.preventDefault();
     if (!validateRegister()) return;
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1400)); // TODO: replace with API call
+    // TODO: replace with real API call
+    await new Promise(r => setTimeout(r, 1400));
     setLoading(false); setSuccess(true);
     setTimeout(() => onAuthSuccess?.({ name: regName, email: regEmail }), 900);
   };
 
   const switchMode = (m) => { setMode(m); setErrors({}); setSuccess(false); };
+
+  if (auth0Loading) {
+    return (
+      <div style={{
+        minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: '#202c21',
+      }}>
+        <div style={{
+          width: 32, height: 32, borderRadius: '50%',
+          border: '3px solid rgba(74,222,128,0.2)',
+          borderTopColor: '#4ade80',
+          animation: 'spin 0.7s linear infinite',
+        }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
 
   return (
     <div style={{
@@ -179,8 +270,6 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
         borderRight: '1px solid rgba(74,222,128,0.09)',
         overflow: 'hidden',
       }}>
-
-        {/* decorative rings */}
         {[{s:360,t:-90,l:-90},{s:220,t:260,l:270},{s:160,t:-30,l:330},{s:440,t:420,l:-130}].map((c,i) => (
           <div key={i} style={{
             position: 'absolute', width: c.s, height: c.s, borderRadius: '50%',
@@ -188,8 +277,6 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
             top: c.t, left: c.l, pointerEvents: 'none',
           }} />
         ))}
-
-        {/* floating dots */}
         {[...Array(5)].map((_, i) => (
           <div key={i} style={{
             position: 'absolute', width: 5, height: 5, borderRadius: '50%',
@@ -200,7 +287,6 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
           }} />
         ))}
 
-        {/* Back button */}
         <button onClick={onBack} style={{
           position: 'absolute', top: 28, left: 28,
           display: 'flex', alignItems: 'center', gap: 6,
@@ -216,7 +302,6 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
           Back to app
         </button>
 
-        {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 52 }}>
           <div style={{
             width: 44, height: 44, borderRadius: 12,
@@ -237,7 +322,6 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
           </div>
         </div>
 
-        {/* Hero text */}
         <h1 style={{
           fontFamily: "'Playfair Display', serif",
           fontSize: 36, fontWeight: 700, color: '#f0fdf4',
@@ -250,13 +334,12 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
           get weather alerts, and maximise yields — all in one place.
         </p>
 
-        {/* Feature list */}
         {[
-          { icon: 'alert',    text: 'AI disease detection in seconds'         },
-          { icon: 'cloud',    text: 'Hyper-local weather & farming alerts'    },
-          { icon: 'market',   text: 'Live mandi prices across India'          },
-          { icon: 'gov',      text: 'Government schemes & subsidy tracker'    },
-          { icon: 'users',    text: 'Farmer community & expert advice'        },
+          { icon: 'alert',  text: 'AI disease detection in seconds'      },
+          { icon: 'cloud',  text: 'Hyper-local weather & farming alerts' },
+          { icon: 'market', text: 'Live mandi prices across India'       },
+          { icon: 'gov',    text: 'Government schemes & subsidy tracker' },
+          { icon: 'users',  text: 'Farmer community & expert advice'     },
         ].map((f, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 13, marginBottom: 14 }}>
             <div style={{
@@ -282,7 +365,6 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
       }}>
         <div style={{ width: '100%', maxWidth: 420 }}>
 
-          {/* Tab switcher */}
           <div style={{
             display: 'flex', background: 'rgba(255,255,255,0.03)',
             border: '1px solid rgba(255,255,255,0.07)',
@@ -313,9 +395,20 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
               }}>
                 <Icon name="check" size={26} color="#4ade80" />
               </div>
+              {/* Show Google profile picture if available */}
+              {user?.picture && (
+                <img src={user.picture} alt="profile" style={{
+                  width: 48, height: 48, borderRadius: '50%',
+                  border: '2px solid rgba(74,222,128,0.4)',
+                  margin: '0 auto 12px', display: 'block',
+                }} />
+              )}
               <h3 style={{ color: '#f0fdf4', fontFamily: "'Playfair Display', serif", fontSize: 22, marginBottom: 8 }}>
                 {mode === 'login' ? 'Welcome back!' : 'Account created!'}
               </h3>
+              {user?.name && (
+                <p style={{ color: '#86efac', fontSize: 14, marginBottom: 4 }}>{user.name}</p>
+              )}
               <p style={{ color: 'rgba(200,230,201,0.5)', fontSize: 13 }}>Redirecting to your dashboard…</p>
             </div>
           )}
@@ -329,6 +422,10 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
               <p style={{ color: 'rgba(200,230,201,0.45)', fontSize: 13, marginBottom: 24 }}>
                 Sign in to your कृषि Mitra account
               </p>
+
+              {/* ── Google button first ── */}
+              <GoogleBtn onClick={handleGoogleLogin} loading={loading} />
+              <Divider />
 
               <Field label="Email address" type="email" placeholder="yourname@example.com"
                 value={loginEmail} onChange={e => setLoginEmail(e.target.value)}
@@ -345,7 +442,7 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
                 }}>Forgot password?</button>
               </div>
 
-              <SubmitBtn loading={loading}>Sign In</SubmitBtn>
+              <SubmitBtn loading={loading}>Sign In with Email</SubmitBtn>
 
               <p style={{ textAlign: 'center', color: 'rgba(200,230,201,0.35)', fontSize: 12, marginTop: 18 }}>
                 Don't have an account?{' '}
@@ -366,6 +463,10 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
               <p style={{ color: 'rgba(200,230,201,0.45)', fontSize: 13, marginBottom: 22 }}>
                 Free forever · No credit card needed
               </p>
+
+              {/* ── Google button first ── */}
+              <GoogleBtn onClick={handleGoogleLogin} loading={loading} />
+              <Divider />
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <Field label="Full Name" placeholder="Ramesh Kumar"
@@ -389,7 +490,6 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
                   icon="check" error={errors.regConfirm} />
               </div>
 
-              {/* State */}
               <div style={{ marginBottom: 16 }}>
                 <label style={{
                   display: 'block', marginBottom: 6, fontSize: 10, fontWeight: 600,
@@ -412,7 +512,6 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
                 </select>
               </div>
 
-              {/* Primary crop chips */}
               <div style={{ marginBottom: 20 }}>
                 <label style={{
                   display: 'block', marginBottom: 8, fontSize: 10, fontWeight: 600,
@@ -432,7 +531,7 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
                 </div>
               </div>
 
-              <SubmitBtn loading={loading}>Create Account</SubmitBtn>
+              <SubmitBtn loading={loading}>Create Account with Email</SubmitBtn>
 
               <p style={{ textAlign: 'center', color: 'rgba(200,230,201,0.3)', fontSize: 11, marginTop: 14, lineHeight: 1.7 }}>
                 By registering you agree to our{' '}
