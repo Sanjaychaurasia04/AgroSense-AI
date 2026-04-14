@@ -1,13 +1,10 @@
-// server.js (FINAL WORKING VERSION)
-
+// server.js (VERCEL-COMPATIBLE VERSION)
 import express from 'express';
 import cors from 'cors';
 import fetch from 'node-fetch';
 
 const app = express();
-const PORT = 4000;
 
-// 🔥 HARDCODED (for now - debugging)
 const AUTH0_DOMAIN = "dev-zl6sofbd5sbrdbde.us.auth0.com";
 const AUTH0_CLIENT_ID = "yXHFS5b5pvSMFfeu76iCUJCW7kM5ffwH";
 
@@ -50,7 +47,6 @@ app.post('/auth/send-otp', async (req, res) => {
     );
 
     const data = await auth0Res.json();
-
     console.log("🔍 Auth0 response:", data);
 
     if (!auth0Res.ok) {
@@ -103,7 +99,6 @@ app.post('/auth/verify-otp', async (req, res) => {
     );
 
     const data = await auth0Res.json();
-
     console.log("🔍 Verify response:", data);
 
     if (!auth0Res.ok) {
@@ -111,7 +106,7 @@ app.post('/auth/verify-otp', async (req, res) => {
       return res.status(auth0Res.status).json(data);
     }
 
-    // Decode user info
+    // Decode user info from id_token
     const [, payloadB64] = data.id_token.split('.');
     const profile = JSON.parse(
       Buffer.from(payloadB64, 'base64url').toString('utf8')
@@ -135,7 +130,5 @@ app.post('/auth/verify-otp', async (req, res) => {
   }
 });
 
-// ── START SERVER ──────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-});
+// ── EXPORT for Vercel (replaces app.listen) ───────
+export default app;
