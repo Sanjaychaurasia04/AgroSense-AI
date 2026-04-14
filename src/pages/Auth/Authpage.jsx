@@ -4,14 +4,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Icon from '../../components/common/Icon';
 
 // ── Backend base URL ──────────────────────────────────────────
-// Add VITE_API_URL=http://localhost:4000 to your frontend .env
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
-// ── Backend API helpers ───────────────────────────────────────
-/**
- * Calls YOUR Express server → which proxies to Auth0 /passwordless/start
- * This sidesteps Auth0's CORS block on direct browser calls.
- */
+const API = import.meta.env.VITE_API_URL || 'https://agro-sense-ai-backend.vercel.app';
+
 const sendOtp = async (email) => {
   const res = await fetch(`${API}/auth/send-otp`, {
     method:  'POST',
@@ -23,10 +18,6 @@ const sendOtp = async (email) => {
   return data;
 };
 
-/**
- * Calls YOUR Express server → which proxies to Auth0 /oauth/token
- * Returns { user: { name, email, picture }, access_token, id_token }
- */
 const verifyOtp = async (email, otp) => {
   const res = await fetch(`${API}/auth/verify-otp`, {
     method:  'POST',
