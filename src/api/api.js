@@ -1,6 +1,6 @@
 // src/api/api.js
 const BACKEND = "http://localhost:8000";
-const OWM_KEY = import.meta.env?.VITE_OPENWEATHER_API_KEY || "1d8718546f43e91b90fe914c96b6881e";
+const OWM_KEY = import.meta.env?.VITE_OPENWEATHER_API_KEY;
 const OWM_BASE = "https://api.openweathermap.org/data/2.5";
 
 // ── Is input a 6-digit Indian PIN code? ──────────────────────
@@ -176,8 +176,7 @@ export const demoDiseaseResult = {
 
 // ── REPLACE getMandiPrices at the bottom of src/api/api.js ───
 
-const DATAGOV_KEY = import.meta.env?.VITE_DATAGOV_API_KEY
-  || '579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b';
+const DATAGOV_KEY = import.meta.env?.VITE_DATAGOV_API_KEY;
 
 // Format date as DD/MM/YYYY for the API filter
 const formatDate = (date) => {
