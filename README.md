@@ -1,497 +1,108 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=1b4332,2d6a4f,40916c,52b788&height=220&section=header&text=🌿%20AgroSense%20AI&fontSize=64&fontColor=ffffff&fontAlignY=40&desc=Intelligent%20Farming%20Powered%20by%20Deep%20Learning&descAlignY=60&descSize=20&animation=fadeIn" width="100%"/>
-
-</div>
-
-<div align="center">
-
-<!-- STATUS -->
-<img src="https://img.shields.io/badge/⚡%20Status-Live%20%26%20Deployed-22c55e?style=for-the-badge" alt="Live"/>
-&nbsp;
-<a href="https://agro-sense-ai-smoky.vercel.app/">
-  <img src="https://img.shields.io/badge/🌐%20Live%20Demo-Try%20It%20Now-2d6a4f?style=for-the-badge" alt="Live Demo"/>
-</a>
-&nbsp;
-<a href="https://github.com/Sanjaychaurasia04/AgroSense-AI">
-  <img src="https://img.shields.io/badge/⭐%20GitHub-Star%20This%20Repo-181717?style=for-the-badge&logo=github" alt="GitHub"/>
-</a>
-
-<br/><br/>
-
-<!-- TECH STACK BADGES -->
-<img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black"/>
-<img src="https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite&logoColor=white"/>
-<img src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white"/>
-<img src="https://img.shields.io/badge/Python-3.10-3776AB?style=flat-square&logo=python&logoColor=white"/>
-<img src="https://img.shields.io/badge/Flask-3.0-000000?style=flat-square&logo=flask&logoColor=white"/>
-<img src="https://img.shields.io/badge/TensorFlow%20%2F%20Keras-FF6F00?style=flat-square&logo=tensorflow&logoColor=white"/>
-<img src="https://img.shields.io/badge/ResNet--50-Deep%20Learning-8B5CF6?style=flat-square"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=1b4332,2d6a4f,40916c,52b788&height=220&section=header&text=🌿%20AgroSense%20AI&fontSize=64&fontColor=ffffff&fontAlignY=40&desc=Intelligent%20Farming%20Powered%20by%20Deep%20Learning&descAlignY=62&descSize=20&animation=fadeIn" />
 
 <br/>
 
-<!-- HOSTING BADGES -->
-<img src="https://img.shields.io/badge/Vercel-Frontend-000000?style=flat-square&logo=vercel&logoColor=white"/>
-<img src="https://img.shields.io/badge/Hugging%20Face-Model%20API-FFD21E?style=flat-square&logo=huggingface&logoColor=black"/>
-<img src="https://img.shields.io/badge/Kaggle-GPU%20Training-20BEFF?style=flat-square&logo=kaggle&logoColor=white"/>
-<img src="https://img.shields.io/badge/License-MIT-a7f3d0?style=flat-square"/>
-
-<br/><br/>
-
-<p align="center">
-<b>AgroSense AI</b> is an end-to-end intelligent agriculture platform that brings deep learning and AI to every farmer's fingertips.<br/>
-Detect plant diseases from a leaf photo, get smart crop recommendations from soil data, check live weather, and<br/>
-chat with an AI farming assistant — all in one beautifully unified web application.
-</p>
-
-</div>
+[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Try%20It%20Now-2d6a4f?style=for-the-badge)](https://agro-sense-ai-smoky.vercel.app/)
+[![GitHub Repo](https://img.shields.io/badge/⭐%20GitHub-Star%20This%20Repo-181717?style=for-the-badge&logo=github)](https://github.com/Sanjaychaurasia04/AgroSense-AI)
+[![MIT License](https://img.shields.io/badge/License-MIT-a7f3d0?style=for-the-badge)](LICENSE)
 
 <br/>
 
-<div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&color=1b4332&height=2&width=100%" width="100%"/>
-</div>
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=flat-square&logo=mongodb&logoColor=white)
+![Auth0](https://img.shields.io/badge/Auth0-Authentication-EB5424?style=flat-square&logo=auth0&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/TensorFlow%2FKeras-ResNet--50-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/Hugging%20Face-Model%20API-FFD21E?style=flat-square&logo=huggingface&logoColor=black)
+![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?style=flat-square&logo=vercel&logoColor=white)
 
 <br/>
+
+> **AgroSense AI** is an end-to-end precision agriculture platform that brings deep learning to every farmer's fingertips.
+> Detect plant diseases from a leaf photo, get smart crop recommendations from soil data, check live weather,
+> and chat with an AI farming assistant — all in one unified, mobile-ready web application.
+
+<br/>
+
+</div>
+
+---
 
 ## 📋 Table of Contents
 
-<table>
-<tr>
-<td valign="top" width="50%">
-
-**Getting to Know AgroSense**
-- [🌾 Why AgroSense AI?](#-why-agrosense-ai)
-- [✨ Features at a Glance](#-features-at-a-glance)
-- [🔬 Feature Deep-Dives](#-feature-deep-dives)
-  - [🦠 Plant Disease Detection](#-1-plant-disease-detection)
-  - [🌾 Crop Recommendation Engine](#-2-crop-recommendation-engine)
-  - [🌤️ Weather Intelligence](#️-3-real-time-weather-intelligence)
-  - [🤖 AI Farming Chatbot](#-4-ai-farming-chatbot)
-
-</td>
-<td valign="top" width="50%">
-
-**Technical Reference**
-- [🏗️ System Architecture](#️-system-architecture)
-- [🧠 Deep Learning Model](#-deep-learning-model--full-breakdown)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [📂 Project Structure](#-project-structure)
-- [🚀 Local Setup](#-local-setup--installation)
-- [🔑 Environment Variables](#-environment-variables)
-- [🌐 Deployment Guide](#-deployment-guide)
-- [🗺️ Roadmap](#️-roadmap)
-- [🤝 Contributing](#-contributing)
-
-</td>
-</tr>
-</table>
-
-<br/>
+- [Why AgroSense AI?](#-why-agrosense-ai)
+- [Live Demo](#-live-demo)
+- [Features](#-features)
+  - [Plant Disease Detection](#-1-plant-disease-detection)
+  - [Crop Recommendation Engine](#-2-crop-recommendation-engine)
+  - [Real-Time Weather Dashboard](#-3-real-time-weather-dashboard)
+  - [AI Farming Chatbot](#-4-ai-farming-chatbot)
+- [System Architecture](#️-system-architecture)
+- [Deep Learning Model](#-deep-learning-model)
+- [Tech Stack](#️-tech-stack)
+- [Project Structure](#-project-structure)
+- [Local Setup](#-local-setup)
+- [Environment Variables](#-environment-variables)
+- [Backend & API Proxy](#-backend--api-proxy)
+- [ML Model Deployment](#-ml-model-deployment-hugging-face)
+- [Deployment Guide](#-deployment-guide)
+- [Roadmap](#️-roadmap)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
-
-<div align="center">
 
 ## 🌾 Why AgroSense AI?
 
-</div>
+> *India loses an estimated **₹50,000 crore** worth of crops every year to plant diseases and poor crop selection. Most farmers never receive a timely diagnosis.*
 
-> *"India loses an estimated **₹50,000 crore** worth of crops every year to plant diseases and poor crop selection. Most farmers never get a timely diagnosis."*
-
-Farmers across rural India and the developing world face the same compounding problems every season: diseases go undetected until yield is lost, soil analysis requires expensive lab visits, and expert agronomists are out of reach. Existing digital tools demand technical literacy, strong internet, or costly subscriptions.
+Farmers across rural India and the developing world face the same compounding challenges every season: diseases go undetected until yield is already lost, soil analysis requires expensive lab visits, and expert agronomists are out of reach. Existing digital tools demand technical literacy, reliable internet, or costly subscriptions.
 
 **AgroSense AI was built to close every one of those gaps.**
 
-<br/>
-
-<div align="center">
-
-| ❌ &nbsp; Without AgroSense | ✅ &nbsp; With AgroSense AI |
-|:---|:---|
-| Send leaf samples to a lab — wait days for results | 📸 Upload a photo — diagnosis in seconds |
-| Guess which crop your soil supports | 🧪 Enter soil data — get a data-driven recommendation |
-| Juggle multiple apps for weather, crops, and advice | 🏠 One unified platform for everything |
-| Pay consultation fees for agronomist guidance | 🤖 Ask the AI chatbot anytime, completely free |
-| Desktop-only tools that farmers can't use on the go | 📱 Fully responsive — works on any device |
-
-</div>
-
-<br/>
+| Without AgroSense AI | With AgroSense AI |
+|---|---|
+| Send leaf samples to a lab — wait days | Upload a photo — diagnosis in seconds |
+| Guess which crop your soil supports | Enter soil data — get a data-driven recommendation |
+| Juggle multiple apps for weather, crops, advice | One unified platform for everything |
+| Pay consultation fees for agronomist guidance | Ask the AI chatbot anytime, completely free |
+| Desktop-only tools farmers can't use in the field | Fully responsive — works on any phone |
 
 ---
 
-<div align="center">
+## 🌐 Live Demo
 
-## ✨ Features at a Glance
+**[→ agro-sense-ai-smoky.vercel.app](https://agro-sense-ai-smoky.vercel.app/)**
 
-</div>
-
-<br/>
-
-<div align="center">
-
-```
- ┌─────────────────────────────────────────────────────────────────────────────┐
- │                                                                             │
- │    🌿  A G R O S E N S E   A I  —  Platform Overview                       │
- │                                                                             │
- ├───────────────┬──────────────────┬──────────────────┬────────────────────── ┤
- │  🦠 Disease   │  🌾 Crop Rec.   │  🌤️  Weather    │  🤖 AI Chatbot       │
- │  Detection    │  Engine          │  Dashboard       │                       │
- ├───────────────┼──────────────────┼──────────────────┼───────────────────────┤
- │ Upload a leaf │ Enter 7 soil     │ Real-time        │ Natural language      │
- │ photo →       │ & climate        │ conditions for   │ farming assistant     │
- │ ResNet-50     │ parameters →     │ any location     │ available 24/7        │
- │ classifies    │ ML model →       │ worldwide        │                       │
- │ 38 diseases   │ ideal crop       │                  │                       │
- ├───────────────┼──────────────────┼──────────────────┼───────────────────────┤
- │ 87K+ training │ 22+ supported    │ Temp · Humidity  │ Crop care · Pests     │
- │ images        │ crop varieties   │ Wind · Rain      │ Soil · Fertilizer     │
- │ Flask API on  │ NPK + pH +       │ Cloud cover      │ Seasons · Schemes     │
- │ Hugging Face  │ rainfall inputs  │ Visibility       │ Powered by LLM        │
- └───────────────┴──────────────────┴──────────────────┴───────────────────────┘
-```
-
-</div>
-
-<br/>
+> **Note on first load:** The plant disease model runs on a free Hugging Face Space that sleeps when idle. The first inference after a period of inactivity may take 20–40 seconds to wake up. Subsequent requests are fast.
 
 ---
 
-<div align="center">
-
-## 🔬 Feature Deep-Dives
-
-</div>
-
-<br/>
+## ✨ Features
 
 ### 🦠 1. Plant Disease Detection
 
-<div align="center">
-<img src="https://img.shields.io/badge/Core%20Feature-ResNet--50%20%7C%2038%20Classes%20%7C%2087K%2B%20Images-2d6a4f?style=flat-square"/>
-</div>
+The flagship feature. Upload any leaf photo and a custom-trained **ResNet-50 convolutional neural network** classifies it across **38 disease categories** covering **14 crop species**.
 
-<br/>
+**What you get back:**
 
-The **flagship feature** of AgroSense AI — an intelligent plant disease classification system powered by a custom-trained **ResNet-50 convolutional neural network**, served through a Flask REST API hosted on Hugging Face Spaces.
+| Field | Example |
+|---|---|
+| Disease name | `Tomato — Late Blight` |
+| Confidence score | `94.7%` |
+| Health status | `Diseased` / `Healthy` badge |
+| Treatment advice | Specific fungicide, cultural, and irrigation recommendations |
 
-<br/>
-
-#### ⚙️ End-to-End Request Flow
-
-```
-  ╔═══════════════╗      ╔═══════════════════════╗      ╔══════════════════════════╗
-  ║  📱  USER     ║      ║   🌐  REACT FRONTEND  ║      ║  🤗  HUGGING FACE API    ║
-  ╠═══════════════╣      ╠═══════════════════════╣      ╠══════════════════════════╣
-  ║               ║      ║                       ║      ║                          ║
-  ║ ① Selects     ║─────►║ ② Reads file as       ║      ║                          ║
-  ║   leaf image  ║      ║   base64 string        ║      ║                          ║
-  ║               ║      ║                       ║      ║                          ║
-  ║               ║      ║ ③ POST /predict       ║─────►║ ④ Decode base64          ║
-  ║               ║      ║   { image, api_key }  ║      ║ ⑤ Resize → 224×224 px   ║
-  ║               ║      ║                       ║      ║ ⑥ Normalize → [0.0, 1.0] ║
-  ║               ║      ║                       ║      ║ ⑦ ResNet-50 inference    ║
-  ║               ║      ║                       ║      ║ ⑧ Softmax → class idx   ║
-  ║               ║      ║                       ║      ║                          ║
-  ║ ⑩ Result card ║◄─────║ ⑨ Renders result card ║◄─────║ { disease, confidence,  ║
-  ║   displayed   ║      ║   with treatment tips  ║      ║   treatment }            ║
-  ╚═══════════════╝      ╚═══════════════════════╝      ╚══════════════════════════╝
-```
-
-<br/>
-
-#### 🖥️ What the User Sees in the Result
-
-| Field | Example Output |
-|-------|---------------|
-| 🔬 **Disease Name** | `Tomato — Late Blight` |
-| 📊 **Confidence Score** | `94.7%` |
-| ✅ **Health Status** | `Diseased` *(or `Healthy` badge)* |
-| 💊 **Treatment Advice** | *"Apply copper-based fungicide. Remove infected foliage. Avoid overhead irrigation..."* |
-
-<br/>
-
-#### 🌿 Supported Crop Species
-
-<div align="center">
-
-`🍎 Apple` &nbsp;·&nbsp; `🫐 Blueberry` &nbsp;·&nbsp; `🍒 Cherry` &nbsp;·&nbsp; `🌽 Corn (Maize)` &nbsp;·&nbsp; `🍇 Grape` &nbsp;·&nbsp; `🍊 Orange`
-`🍑 Peach` &nbsp;·&nbsp; `🫑 Bell Pepper` &nbsp;·&nbsp; `🥔 Potato` &nbsp;·&nbsp; `🫐 Raspberry` &nbsp;·&nbsp; `🫘 Soybean` &nbsp;·&nbsp; `🥒 Squash`
-`🍓 Strawberry` &nbsp;·&nbsp; `🍅 Tomato`
-
-</div>
-
-<br/>
-
----
-
-### 🌾 2. Crop Recommendation Engine
-
-<div align="center">
-<img src="https://img.shields.io/badge/Input-7%20Parameters-52b788?style=flat-square"/>
-&nbsp;
-<img src="https://img.shields.io/badge/Output-22%2B%20Crop%20Varieties-2d6a4f?style=flat-square"/>
-</div>
-
-<br/>
-
-A machine learning engine that processes **7 soil and environmental parameters** to recommend the crop most likely to thrive in a farmer's exact conditions — acting as a data-driven agronomist.
-
-<br/>
-
-#### 📥 Input Parameters
-
-<div align="center">
-
-| # | Parameter | Unit | Agricultural Significance |
-|:-:|-----------|:----:|--------------------------|
-| 1 | **Nitrogen (N)** | kg/ha | Primary driver of vegetative and leaf growth |
-| 2 | **Phosphorus (P)** | kg/ha | Root development, energy storage and transfer |
-| 3 | **Potassium (K)** | kg/ha | Disease resistance, fruit quality, water uptake |
-| 4 | **Temperature** | °C | Germination window and growth rate |
-| 5 | **Humidity** | % | Transpiration, fungal disease risk |
-| 6 | **pH Level** | 0 – 14 | Nutrient availability and soil microbe activity |
-| 7 | **Rainfall** | mm | Water availability and irrigation requirement |
-
-</div>
-
-<br/>
-
-#### 🌱 Crops the Model Can Recommend
-
-<div align="center">
-
-`Rice` · `Wheat` · `Maize` · `Chickpea` · `Kidney Beans` · `Pigeon Peas` · `Moth Beans` · `Mung Beans`
-`Black Gram` · `Lentil` · `Pomegranate` · `Banana` · `Mango` · `Grapes` · `Watermelon` · `Muskmelon`
-`Apple` · `Orange` · `Papaya` · `Coconut` · `Cotton` · `Jute` · `Coffee`
-
-</div>
-
-<br/>
-
-> 💡 **The insight behind the feature:** Most farmers grow the same crop every season out of habit or peer influence — not because it's what their soil demands. The recommendation engine breaks that cycle by surfacing what the data actually supports, often revealing higher-yield alternatives the farmer had never considered.
-
-<br/>
-
----
-
-### 🌤️ 3. Real-Time Weather Intelligence
-
-<div align="center">
-<img src="https://img.shields.io/badge/Live%20Weather-Any%20Location%20Worldwide-0ea5e9?style=flat-square&logo=cloudflare&logoColor=white"/>
-</div>
-
-<br/>
-
-An integrated weather dashboard that surfaces current atmospheric conditions for any location, directly within the farming workflow — no switching between apps.
-
-<br/>
-
-#### 📡 Metrics Displayed
-
-<div align="center">
-
-| Metric | Icon | Agricultural Relevance |
-|--------|:----:|----------------------|
-| Temperature | 🌡️ | Germination viability, frost risk, cold-chain planning |
-| Humidity | 💧 | Fungal disease outbreak probability |
-| Wind Speed & Direction | 💨 | Pesticide & herbicide spray timing |
-| Weather Condition | ⛅ | Irrigation scheduling (skip on rain days) |
-| Cloud Cover | ☁️ | Solar exposure and photosynthesis rate |
-| Visibility | 👁️ | General field operation planning |
-
-</div>
-
-<br/>
-
----
-
-### 🤖 4. AI Farming Chatbot
-
-<div align="center">
-<img src="https://img.shields.io/badge/24%2F7%20AI%20Assistant-Agriculture%20Specialized-7c3aed?style=flat-square&logo=openai&logoColor=white"/>
-</div>
-
-<br/>
-
-A conversational AI assistant embedded in the platform, purpose-built to answer agricultural questions in plain, accessible language — no agronomy degree required to understand the responses.
-
-<br/>
-
-#### 💬 Example Conversation
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│  🧑‍🌾  You                                                               │
-│  ──────────────────────────────────────────────────────────────────     │
-│  "My tomato leaves have yellow spots and are curling at the edges.      │
-│   What could this be, and what should I do?"                            │
-│                                                                         │
-│  🤖  AgroSense AI                                                       │
-│  ──────────────────────────────────────────────────────────────────     │
-│  "Yellow spots with leaf curl on tomato commonly point to one of        │
-│   three issues: Early Blight (Alternaria solani), Septoria Leaf         │
-│   Spot, or Tomato Yellow Leaf Curl Virus (TYLCV).                       │
-│                                                                         │
-│   For a precise diagnosis, upload a photo to the Disease Detection      │
-│   feature — the AI model will identify the exact condition.             │
-│                                                                         │
-│   In the meantime:                                                      │
-│   • Remove and destroy visibly infected leaves                          │
-│   • Avoid overhead watering — water at the base only                    │
-│   • Ensure adequate plant spacing for airflow                           │
-│   • Consider a copper-based fungicide if Early Blight is suspected"    │
-└─────────────────────────────────────────────────────────────────────────┘
-```
-
-<br/>
-
-#### 🗂️ Topics the Chatbot Handles
-
-<div align="center">
-
-| Domain | Examples |
-|--------|---------|
-| 🌱 Crop Care | Watering schedules, pruning techniques, growth stages |
-| 🐛 Pest Control | Identification, organic vs. chemical treatment options |
-| 💊 Fertilizers | NPK dosage, timing, deficiency symptoms |
-| 🧪 Soil Management | pH correction, organic matter, composting |
-| 📅 Seasonal Planning | Planting windows, harvest timing, crop rotation |
-| 🔗 Platform Guidance | Routing users to the right AgroSense feature |
-
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-## 🏗️ System Architecture
-
-</div>
-
-<br/>
-
-```
-                    ┌─────────────────────────────────────────────┐
-                    │              USER  (Any Device)             │
-                    │        Mobile  ·  Tablet  ·  Desktop        │
-                    └──────────────────┬──────────────────────────┘
-                                       │  HTTPS
-                    ┌──────────────────▼──────────────────────────┐
-                    │           VERCEL  (Global CDN)              │
-                    │  ┌──────────────────────────────────────┐   │
-                    │  │         React 18  +  Vite            │   │
-                    │  │   Single-Page Application (SPA)      │   │
-                    │  │                                      │   │
-                    │  │  Pages          Components           │   │
-                    │  │  ─────          ──────────           │   │
-                    │  │  Home           Navbar               │   │
-                    │  │  DiseaseDetect  ChatBot              │   │
-                    │  │  CropRec        ImageUploader        │   │
-                    │  │  Weather        ResultCard           │   │
-                    │  └──────────────┬───────────────────────┘   │
-                    └─────────────────┼───────────────────────────┘
-                                      │  API Calls (HTTPS + API Keys)
-             ┌────────────────────────┼──────────────────────────────┐
-             │                        │                              │
- ┌───────────▼────────────┐  ┌────────▼─────────┐  ┌───────────────▼──────┐
- │   HUGGING FACE SPACES  │  │   WEATHER API    │  │    LLM  API           │
- │   Flask  +  ResNet-50  │  │ (OpenWeatherMap) │  │  (Chatbot Backend)    │
- │   Docker Container     │  │                  │  │                       │
- │                        │  │  GET /weather    │  │  POST /chat           │
- │  POST  /predict        │  │  ?city={query}   │  │  { messages[] }       │
- │  { base64_image }      │  │                  │  │                       │
- │                        │  │  → temp          │  │  → natural language   │
- │  → disease name        │  │  → humidity      │  │    farming guidance   │
- │  → confidence %        │  │  → wind          │  │                       │
- │  → treatment advice    │  │  → condition     │  │                       │
- └────────────────────────┘  └──────────────────┘  └───────────────────────┘
-
- ╔═════════════════════════════════════════════════════════════════════════╗
- ║                    ML MODEL  TRAINING  PIPELINE                        ║
- ║                                                                        ║
- ║  Kaggle Notebooks (P100 GPU)                                           ║
- ║      ↓                                                                 ║
- ║  New Plant Disease Dataset  ·  87,000+ images  ·  38 classes           ║
- ║      ↓                                                                 ║
- ║  Preprocessing  →  Augmentation  →  ResNet-50 Fine-Tuning              ║
- ║      ↓                                                                 ║
- ║  Export  →  plant_disease_model.keras                                  ║
- ║      ↓                                                                 ║
- ║  Deploy  →  Hugging Face Spaces  (Flask + Docker)                      ║
- ╚═════════════════════════════════════════════════════════════════════════╝
-```
-
-<br/>
-
----
-
-<div align="center">
-
-## 🧠 Deep Learning Model — Full Breakdown
-
-</div>
-
-<br/>
-
-### Architecture: Why ResNet-50?
-
-**ResNet-50** (Residual Network, 50 layers deep) was chosen over simpler architectures for one decisive reason: **residual (skip) connections** that solve the vanishing gradient problem crippling standard deep networks.
-
-<br/>
-
-```
-  Standard 50-Layer Network          ResNet-50 Residual Block
-  ──────────────────────────          ────────────────────────────────────
-
-  Input                               Input ───────────────────────────┐
-    │                                   │                              │
-  Conv → BN → ReLU                   Conv → BatchNorm → ReLU          │  Skip
-    │                                   │                              │  Connection
-  Conv → BN → ReLU                   Conv → BatchNorm → ReLU          │  (Identity)
-    │                                   │                              │
-  Conv → BN → ReLU       ←VANISHES   Conv → BatchNorm ←─────────── Add → ReLU
-    │                    gradients       │
-  ...  (learning stops               Next block...
-        in early layers)
-```
-
-**The disease detection benefit:** Leaf diseases appear as subtle visual signals — irregular pigmentation, fine texture changes, spot boundaries. Learning these patterns requires simultaneously preserving low-level texture features in early layers *and* high-level disease semantics in deep layers. ResNet-50's skip connections guarantee gradient flow to both, which is why it significantly outperforms shallow architectures on fine-grained visual classification.
-
-<br/>
-
-### Dataset
-
-<div align="center">
-
-| Property | Value |
-|:---------|:------|
-| **Name** | New Plant Disease Dataset |
-| **Source** | Kaggle |
-| **Total Images** | 87,000+ RGB leaf images |
-| **Number of Classes** | 38 (disease categories + healthy labels) |
-| **Crop Species** | 14 |
-| **Image Format** | JPG · RGB |
-| **Train / Val Split** | 80% / 20% |
-| **Augmentation** | Rotation · Horizontal flip · Zoom · Brightness shift |
-
-</div>
-
-<br/>
-
-### Supported Disease Classes
+**Supported crops:** Apple · Blueberry · Cherry · Corn · Grape · Orange · Peach · Bell Pepper · Potato · Raspberry · Soybean · Squash · Strawberry · Tomato
 
 <details>
-<summary><b>🔽 Click to expand — all 38 disease classes</b></summary>
+<summary><b>View all 38 disease classes</b></summary>
 
-<br/>
-
-| # | Class Label | # | Class Label |
-|:-:|-------------|:-:|-------------|
+| # | Class | # | Class |
+|---|---|---|---|
 | 1 | Apple — Apple Scab | 20 | Bell Pepper — Healthy |
 | 2 | Apple — Black Rot | 21 | Potato — Early Blight |
 | 3 | Apple — Cedar Apple Rust | 22 | Potato — Late Blight |
@@ -514,371 +125,371 @@ A conversational AI assistant embedded in the platform, purpose-built to answer 
 
 </details>
 
-<br/>
+---
+
+### 🌾 2. Crop Recommendation Engine
+
+Enter 7 soil and climate parameters and receive a data-driven recommendation for the crop most likely to thrive in your exact conditions.
+
+**Input parameters:**
+
+| Parameter | Unit | Why it matters |
+|---|---|---|
+| Nitrogen (N) | kg/ha | Drives vegetative and leaf growth |
+| Phosphorus (P) | kg/ha | Root development, energy storage |
+| Potassium (K) | kg/ha | Disease resistance, fruit quality |
+| Temperature | °C | Germination window, growth rate |
+| Humidity | % | Transpiration, fungal disease risk |
+| pH Level | 0–14 | Nutrient availability, soil biology |
+| Rainfall | mm | Water availability, irrigation need |
+
+**Supported output crops:** Rice · Wheat · Maize · Chickpea · Kidney Beans · Pigeon Peas · Moth Beans · Mung Beans · Black Gram · Lentil · Pomegranate · Banana · Mango · Grapes · Watermelon · Muskmelon · Apple · Orange · Papaya · Coconut · Cotton · Jute · Coffee
+
+---
+
+### 🌤️ 3. Real-Time Weather Dashboard
+
+Search any city worldwide and get live atmospheric conditions relevant to farm planning.
+
+| Metric | Agricultural relevance |
+|---|---|
+| Temperature | Germination viability, frost risk |
+| Humidity | Fungal disease outbreak probability |
+| Wind speed & direction | Pesticide spray timing |
+| Weather condition | Irrigation scheduling |
+| Cloud cover | Solar exposure, photosynthesis |
+| Visibility | General field operations |
+
+---
+
+### 🤖 4. AI Farming Chatbot
+
+A conversational AI assistant embedded across the platform, purpose-built for agricultural queries — available 24/7 at no cost.
+
+**Topics it handles:**
+
+- Crop care — watering, pruning, growth stages
+- Pest control — identification, organic vs. chemical options
+- Fertilizers — NPK dosage, timing, deficiency symptoms
+- Soil management — pH correction, composting, organic matter
+- Seasonal planning — planting windows, harvest timing, crop rotation
+- Platform guidance — routing users to the right AgroSense feature
+
+---
+
+## 🏗️ System Architecture
+
+```
+┌─────────────────────────────────────────────────┐
+│              USER  (Any Device)                 │
+│        Mobile  ·  Tablet  ·  Desktop            │
+└──────────────────┬──────────────────────────────┘
+                   │  HTTPS
+┌──────────────────▼──────────────────────────────┐
+│            VERCEL  (Global CDN)                 │
+│  React 19 + Vite 7  —  Single-Page Application  │
+│                                                 │
+│  Pages: Home · DiseaseDetect · CropRec          │
+│         Weather · About                         │
+│  Components: Navbar · ChatBot · ImageUploader   │
+│              ResultCard · WeatherCard           │
+└──────────────────┬──────────────────────────────┘
+                   │  All API calls routed via
+                   │  Express backend proxy
+┌──────────────────▼──────────────────────────────┐
+│          NODE.JS / EXPRESS 5  (server.js)       │
+│          MongoDB via Mongoose                   │
+│          Auth0 Authentication                   │
+│          API key proxy — keys never reach       │
+│          the browser                            │
+└────────────┬─────────────┬──────────────────────┘
+             │             │                │
+  ┌──────────▼──┐  ┌───────▼──────┐  ┌─────▼──────────┐
+  │  HUGGING    │  │  OPENWEATHER │  │   LLM API      │
+  │  FACE SPACE │  │  MAP API     │  │ (Chatbot)      │
+  │  Flask +    │  │              │  │                │
+  │  ResNet-50  │  │  Current     │  │  Agriculture-  │
+  │  38 classes │  │  conditions  │  │  specialized   │
+  │  87K images │  │  worldwide   │  │  assistant     │
+  └─────────────┘  └──────────────┘  └────────────────┘
+```
+
+**ML Training Pipeline (separate, offline):**
+
+```
+Kaggle Notebook (NVIDIA P100 GPU)
+  → New Plant Disease Dataset (87,000+ images, 38 classes)
+  → Preprocessing + Augmentation
+  → ResNet-50 Transfer Learning (Phase 1: frozen base)
+  → Fine-tuning (Phase 2: unfrozen last N blocks, lr=1e-5)
+  → Export → plant_disease_model.keras
+  → Deploy → Hugging Face Spaces (Flask + Docker)
+```
+
+---
+
+## 🧠 Deep Learning Model
+
+### Why ResNet-50?
+
+ResNet-50's **residual skip connections** solve the vanishing gradient problem that cripples standard deep networks. For plant disease detection specifically, the model must simultaneously learn low-level texture features (fine pigmentation, lesion boundaries) in early layers *and* high-level disease semantics in deep layers. Skip connections guarantee gradient flow to both, which is why ResNet-50 significantly outperforms shallower architectures on this fine-grained visual classification task.
+
+### Dataset
+
+| Property | Value |
+|---|---|
+| Name | New Plant Disease Dataset |
+| Source | Kaggle |
+| Total images | 87,000+ RGB leaf images |
+| Classes | 38 (disease + healthy labels) |
+| Crop species | 14 |
+| Train / val split | 80% / 20% |
+| Augmentation | Rotation · Horizontal flip · Zoom · Brightness shift |
 
 ### Training Pipeline
 
 ```
-╔══════════════════════════════════════════════════════════════════════════╗
-║  STEP 1  —  ENVIRONMENT                                                 ║
-║  Platform : Kaggle Notebook · GPU : NVIDIA P100 (16 GB VRAM)            ║
-║  Framework: TensorFlow 2.x + Keras                                      ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║  STEP 2  —  PREPROCESSING                                               ║
-║  • Resize all images to 224 × 224 px (ResNet-50 input)                  ║
-║  • Normalize pixel values: [0, 255]  →  [0.0, 1.0]                      ║
-║  • Augmentation via ImageDataGenerator:                                 ║
-║      rotation_range=20  |  zoom_range=0.2                               ║
-║      width/height_shift_range=0.2  |  horizontal_flip=True              ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║  STEP 3  —  MODEL CONSTRUCTION                                          ║
-║  base = ResNet50(weights='imagenet', include_top=False)                 ║
-║  Head → GlobalAveragePooling2D                                          ║
-║       → Dense(512, activation='relu')                                   ║
-║       → Dropout(0.5)                                                    ║
-║       → Dense(38, activation='softmax')  ← 38 output classes            ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║  STEP 4  —  TWO-PHASE TRAINING                                          ║
-║  Phase 1 — Transfer Learning (base frozen)                              ║
-║      Optimizer: Adam(lr=1e-3)  |  Loss: Categorical Crossentropy        ║
-║      Epochs: ~10  →  trains custom head rapidly                         ║
-║                                                                         ║
-║  Phase 2 — Fine-Tuning (unfreeze last N ResNet blocks)                  ║
-║      Optimizer: Adam(lr=1e-5)  ← low LR preserves pretrained weights   ║
-║      Epochs: until val_loss converges                                   ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║  STEP 5  —  EXPORT                                                      ║
-║  model.save('plant_disease_model.keras')                                ║
-║  → Preserves architecture + weights + optimizer state                   ║
-╚══════════════════════════════════════════════════════════════════════════╝
+STEP 1 — Environment
+  Platform : Kaggle Notebook · GPU : NVIDIA P100 (16 GB VRAM)
+  Framework: TensorFlow 2.x + Keras
+
+STEP 2 — Preprocessing
+  • Resize all images to 224 × 224 px
+  • Normalize pixel values: [0, 255] → [0.0, 1.0]
+  • Augmentation via ImageDataGenerator:
+      rotation_range=20 | zoom_range=0.2
+      width/height_shift_range=0.2 | horizontal_flip=True
+
+STEP 3 — Model Construction
+  base = ResNet50(weights='imagenet', include_top=False)
+  Head:  GlobalAveragePooling2D
+      →  Dense(512, activation='relu')
+      →  Dropout(0.5)
+      →  Dense(38, activation='softmax')
+
+STEP 4 — Two-Phase Training
+  Phase 1 (Transfer Learning — base frozen)
+    Optimizer : Adam(lr=1e-3)
+    Loss      : Categorical Crossentropy
+    Epochs    : ~10
+
+  Phase 2 (Fine-Tuning — last N blocks unfrozen)
+    Optimizer : Adam(lr=1e-5)
+    Epochs    : until val_loss converges
+
+STEP 5 — Export
+  model.save('plant_disease_model.keras')
 ```
 
-<br/>
+### Inference API
 
-### Inference API — Flask on Hugging Face
+The trained model is served via a **Flask REST API** hosted on Hugging Face Spaces (Docker container, Gunicorn, port 7860).
 
-<details>
-<summary><b>🔽 View Flask API code (app.py)</b></summary>
-
-```python
-from flask import Flask, request, jsonify
-from tensorflow.keras.models import load_model
-from PIL import Image
-import numpy as np, base64, io
-
-app   = Flask(__name__)
-model = load_model("plant_disease_model.keras")
-
-CLASS_NAMES = [
-    "Apple___Apple_scab", "Apple___Black_rot", "Apple___Cedar_apple_rust",
-    "Apple___healthy", "Blueberry___healthy", "Cherry___Powdery_mildew",
-    # ... all 38 class labels
-]
-
-TREATMENTS = {
-    "Apple___Apple_scab":
-        "Apply fungicide containing captan or myclobutanil. "
-        "Remove and destroy infected leaves. Improve air circulation.",
-    "Tomato___Late_blight":
-        "Apply copper-based fungicide immediately. Remove infected foliage. "
-        "Avoid overhead watering. Ensure good drainage.",
-    # ... one entry per class
-}
-
-@app.route("/predict", methods=["POST"])
-def predict():
-    raw   = base64.b64decode(request.json["image"])
-    img   = Image.open(io.BytesIO(raw)).convert("RGB").resize((224, 224))
-    arr   = np.expand_dims(np.array(img) / 255.0, axis=0)
-
-    preds = model.predict(arr)
-    idx   = int(np.argmax(preds[0]))
-
-    return jsonify({
-        "disease"   : CLASS_NAMES[idx],
-        "confidence": round(float(np.max(preds[0])) * 100, 2),
-        "treatment" : TREATMENTS.get(CLASS_NAMES[idx], "Consult a local agronomist.")
-    })
+**Request:**
+```json
+POST /predict
+{ "image": "<base64-encoded-jpeg>" }
 ```
 
-</details>
-
-<details>
-<summary><b>🔽 View frontend API call (src/utils/api.js)</b></summary>
-
-```javascript
-const HF_ENDPOINT = import.meta.env.VITE_HF_API_ENDPOINT;
-const HF_API_KEY  = import.meta.env.VITE_HF_API_KEY;
-
-const fileToBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader    = new FileReader();
-    reader.onload   = () => resolve(reader.result.split(",")[1]);
-    reader.onerror  = reject;
-    reader.readAsDataURL(file);
-  });
-
-export async function detectDisease(imageFile) {
-  const base64  = await fileToBase64(imageFile);
-  const res     = await fetch(`${HF_ENDPOINT}/predict`, {
-    method : "POST",
-    headers: {
-      "Content-Type" : "application/json",
-      "Authorization": `Bearer ${HF_API_KEY}`,
-    },
-    body: JSON.stringify({ image: base64 }),
-  });
-
-  if (!res.ok) throw new Error(`API Error: ${res.status}`);
-  return res.json(); // → { disease, confidence, treatment }
+**Response:**
+```json
+{
+  "disease": "Tomato___Late_blight",
+  "confidence": 94.7,
+  "treatment": "Apply copper-based fungicide immediately. Remove infected foliage..."
 }
 ```
-
-</details>
-
-> 🔒 `VITE_HF_API_KEY` lives in Vercel's encrypted environment store and is **never bundled into the client-side JavaScript**.
-
-<br/>
 
 ---
-
-<div align="center">
 
 ## 🛠️ Tech Stack
 
-</div>
-
-<br/>
-
-<div align="center">
-
 ### Frontend
-
 | Technology | Version | Role |
-|:----------:|:-------:|------|
-| <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black"/> | 18 | UI framework — components, state, hooks |
-| <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white"/> | 5 | Build tool, HMR dev server, env variables |
-| <img src="https://img.shields.io/badge/React%20Router-CA4245?style=flat-square&logo=reactrouter&logoColor=white"/> | 6 | Client-side routing |
-| <img src="https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white"/> | 3 | Utility-first responsive styling |
+|---|---|---|
+| React | 19 | UI framework — components, state, hooks |
+| Vite | 7 | Build tool, HMR dev server, env variables |
+| Tailwind CSS | 3 | Utility-first responsive styling |
+| Axios | 1.x | HTTP client |
+| @gradio/client | 2.x | Hugging Face Space communication |
+| Auth0 React SDK | 2.x | User authentication |
 
-### ML Backend
+### Backend
+| Technology | Version | Role |
+|---|---|---|
+| Node.js + Express | 5 | API proxy server, route protection |
+| MongoDB + Mongoose | 9.x | User data, history persistence |
+| Auth0 | — | Authentication provider |
+| dotenv | — | Environment variable management |
 
+### ML & Infrastructure
 | Technology | Role |
-|:----------:|------|
-| <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white"/> | Backend inference language |
-| <img src="https://img.shields.io/badge/Flask-000000?style=flat-square&logo=flask&logoColor=white"/> | Lightweight REST API server |
-| <img src="https://img.shields.io/badge/TensorFlow%20%2F%20Keras-FF6F00?style=flat-square&logo=tensorflow&logoColor=white"/> | Model training and inference |
-| <img src="https://img.shields.io/badge/ResNet--50-Deep%20Learning-8B5CF6?style=flat-square"/> | CNN backbone — 50-layer residual network |
-| <img src="https://img.shields.io/badge/NumPy-013243?style=flat-square&logo=numpy&logoColor=white"/> | Array ops and preprocessing |
-| <img src="https://img.shields.io/badge/Pillow-3776AB?style=flat-square&logo=python&logoColor=white"/> | Image loading and format conversion |
+|---|---|
+| TensorFlow / Keras | Model training and inference |
+| ResNet-50 | CNN backbone — 50-layer residual network |
+| NumPy + Pillow | Array ops, image preprocessing |
+| Flask + Gunicorn | Inference REST API server |
+| Docker | Containerised deployment on Hugging Face |
+| Kaggle (P100 GPU) | Model training environment |
 
-### Infrastructure
-
+### Hosting
 | Service | Hosts |
-|:-------:|-------|
-| <img src="https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white"/> | React frontend · Global CDN · Auto CI/CD |
-| <img src="https://img.shields.io/badge/Hugging%20Face-FFD21E?style=flat-square&logo=huggingface&logoColor=black"/> | Flask API + `.keras` model (Docker Space) |
-| <img src="https://img.shields.io/badge/Kaggle-20BEFF?style=flat-square&logo=kaggle&logoColor=white"/> | GPU model training (NVIDIA P100) |
-
-</div>
-
-<br/>
+|---|---|
+| Vercel | React frontend · Global CDN · Auto CI/CD |
+| Hugging Face Spaces | Flask API + `.keras` model (Docker) |
 
 ---
 
-<div align="center">
-
 ## 📂 Project Structure
-
-</div>
-
-<br/>
 
 ```
 AgroSense-AI/
 │
+├── 📁 backend/                    # Crop recommendation ML model + scripts
+│
 ├── 📁 public/
 │   ├── favicon.ico
-│   └── og-image.png                     # Open Graph image for link previews
+│   └── og-image.png               # Open Graph image for link previews
 │
 ├── 📁 src/
+│   ├── 📁 assets/                 # Static images, SVG icons
 │   │
-│   ├── 📁 assets/                       # Static images, SVG icons, fonts
+│   ├── 📁 components/             # Reusable UI components
+│   │   ├── Navbar.jsx             # Top navigation bar
+│   │   ├── Footer.jsx             # Site footer
+│   │   ├── ChatBot.jsx            # Floating AI chatbot widget
+│   │   ├── ImageUploader.jsx      # Drag-and-drop leaf photo uploader
+│   │   ├── ResultCard.jsx         # Disease prediction result display
+│   │   ├── WeatherCard.jsx        # Single weather metric card
+│   │   └── LoadingSpinner.jsx     # Loading / inference state indicator
 │   │
-│   ├── 📁 components/                   # Reusable UI components
-│   │   ├── Navbar.jsx                   # Top navigation bar
-│   │   ├── Footer.jsx                   # Site footer
-│   │   ├── ChatBot.jsx                  # Floating AI chatbot widget
-│   │   ├── ImageUploader.jsx            # Drag-and-drop leaf photo uploader
-│   │   ├── ResultCard.jsx               # Disease prediction result card
-│   │   ├── WeatherCard.jsx              # Single weather metric card
-│   │   └── LoadingSpinner.jsx           # Loading / inference state indicator
+│   ├── 📁 pages/                  # Route-level page components
+│   │   ├── Home.jsx               # Landing page
+│   │   ├── DiseaseDetection.jsx   # Plant disease detection
+│   │   ├── CropRecommendation.jsx # Crop recommendation engine
+│   │   ├── Weather.jsx            # Weather dashboard
+│   │   └── About.jsx              # About the project
 │   │
-│   ├── 📁 pages/                        # Route-level page components
-│   │   ├── Home.jsx                     # 🏠 Landing page
-│   │   ├── DiseaseDetection.jsx         # 🦠 Plant disease detection
-│   │   ├── CropRecommendation.jsx       # 🌾 Crop recommendation
-│   │   ├── Weather.jsx                  # 🌤️ Weather dashboard
-│   │   └── About.jsx                    # ℹ️ About the project
+│   ├── 📁 utils/                  # Helpers and API wrappers
+│   │   ├── api.js                 # All external API calls
+│   │   └── helpers.js             # Formatters, validators, converters
 │   │
-│   ├── 📁 utils/                        # Helpers and API wrappers
-│   │   ├── api.js                       # All API calls (HF, weather, chatbot)
-│   │   └── helpers.js                   # Formatters, validators, converters
-│   │
-│   ├── App.jsx                          # Root component — router config
-│   ├── main.jsx                         # ReactDOM entry point
-│   └── index.css                        # Global styles + Tailwind directives
+│   ├── App.jsx                    # Root component — router config
+│   ├── main.jsx                   # ReactDOM entry point
+│   └── index.css                  # Global styles + Tailwind directives
 │
-├── .env                                 # 🔒 Local secrets — never commit
-├── .env.example                         # ✅ Safe template — commit this
+├── server.js                      # Express backend — API proxy + auth
+├── .env                           # 🔒 Local secrets — never commit
+├── .env.example                   # ✅ Safe template — commit this
 ├── .gitignore
 ├── index.html
 ├── package.json
-├── tailwind.config.js
 ├── vite.config.js
 └── README.md
 ```
 
-<br/>
-
 ---
 
-<div align="center">
-
-## 🚀 Local Setup & Installation
-
-</div>
-
-<br/>
+## 🚀 Local Setup
 
 ### Prerequisites
 
-<div align="center">
-
-| Requirement | Minimum Version | Verify with |
-|:-----------:|:---------------:|:-----------:|
-| Node.js | `18.x` | `node --version` |
-| npm | `9.x` | `npm --version` |
+| Requirement | Minimum version | Check with |
+|---|---|---|
+| Node.js | 18.x | `node --version` |
+| npm | 9.x | `npm --version` |
 | Git | any | `git --version` |
 
-</div>
-
-<br/>
-
-### Step-by-Step
+### Installation
 
 ```bash
-# ① Clone the repository
+# 1. Clone the repository
 git clone https://github.com/Sanjaychaurasia04/AgroSense-AI.git
 cd AgroSense-AI
 
-# ② Install all dependencies
+# 2. Install all dependencies
 npm install
 
-# ③ Set up your environment variables
+# 3. Set up your environment variables
 cp .env.example .env
-#   → Open .env and fill in your API keys (see next section)
+#    Open .env and fill in all required keys (see next section)
 
-# ④ Start the development server
+# 4a. Start the frontend dev server
 npm run dev
-#   → Open http://localhost:5173 in your browser
-```
+#     → http://localhost:5173
 
-<br/>
+# 4b. Start the Express backend (separate terminal)
+npm run start
+#     → http://localhost:3000 (or your configured port)
+```
 
 ### Available Scripts
 
-<div align="center">
-
 | Command | Description |
-|:-------:|-------------|
-| `npm run dev` | Start local dev server with hot module replacement |
+|---|---|
+| `npm run dev` | Start Vite dev server with hot module replacement |
 | `npm run build` | Build optimised production bundle to `dist/` |
-| `npm run preview` | Serve the production build locally for testing |
+| `npm run preview` | Serve production build locally |
 | `npm run lint` | Run ESLint across the codebase |
-
-</div>
-
-<br/>
+| `npm run start` | Start Express backend server (`server.js`) |
 
 ---
 
-<div align="center">
-
 ## 🔑 Environment Variables
 
-</div>
-
-<br/>
-
-Create a `.env` file in the project root by copying the template. **This file must never be committed to version control.**
+Copy `.env.example` to `.env` and fill in every value. **Never commit `.env` to version control.**
 
 ```bash
 cp .env.example .env
 ```
 
 ```env
-# ── Disease Detection (Hugging Face Flask API) ─────────────────────────────
-# The public URL of your Hugging Face Space
+# ── Disease Detection (Hugging Face Flask API) ──────────────────────────────
+# Your Hugging Face Space URL
 VITE_HF_API_ENDPOINT=https://your-username-your-space-name.hf.space
 
 # Your HF Access Token → huggingface.co → Settings → Access Tokens
 VITE_HF_API_KEY=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-# ── Weather Dashboard ──────────────────────────────────────────────────────
+# ── Weather Dashboard ────────────────────────────────────────────────────────
 # Free tier key from openweathermap.org/api
 VITE_WEATHER_API_KEY=your_openweathermap_key_here
 
-# ── AI Chatbot ─────────────────────────────────────────────────────────────
+# ── AI Chatbot ───────────────────────────────────────────────────────────────
 # API key for your LLM provider (Google Gemini / OpenAI / Groq)
 VITE_CHATBOT_API_KEY=your_llm_api_key_here
+
+# ── Auth0 Authentication ─────────────────────────────────────────────────────
+VITE_AUTH0_DOMAIN=your-tenant.auth0.com
+VITE_AUTH0_CLIENT_ID=your_auth0_client_id
+
+# ── MongoDB (used by Express backend) ────────────────────────────────────────
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/agrosense
 ```
 
-> ⚠️ **All variables must be prefixed with `VITE_`** — this is Vite's security requirement for exposing environment variables to the browser bundle. Any variable without the prefix will be `undefined` at runtime.
-
-<br/>
+> ⚠️ **Security note:** `VITE_` prefixed variables are bundled into the browser JS bundle and are visible in DevTools. Sensitive keys (LLM, database) should be called only from the Express backend (`server.js`), which acts as a secure proxy. Never call paid APIs directly from the frontend.
 
 ---
 
-<div align="center">
+## 🖥️ Backend & API Proxy
 
-## 🌐 Deployment Guide
+The project includes an **Express 5 backend** (`server.js`) that serves two purposes:
 
-</div>
+1. **API key proxy** — forwards requests to Hugging Face, the weather API, and the LLM without exposing keys to the browser.
+2. **User data persistence** — stores conversation history, disease detection logs, and user preferences in MongoDB via Mongoose, associated with Auth0 user accounts.
 
-<br/>
+The Auth0 integration (`@auth0/auth0-react`) handles user sign-up, login, and session management. Protected routes verify JWT tokens issued by Auth0 before granting access to stored user data.
 
-### 🔵 Frontend → Vercel
+---
 
-**Recommended: GitHub Auto-Deploy**
+## 🤗 ML Model Deployment (Hugging Face)
 
-```
-1. Push to GitHub
-       ↓
-2. vercel.com/new → Import AgroSense-AI repo
-       ↓
-3. Add environment variables (all 4 VITE_ keys) in Vercel dashboard
-       ↓
-4. Click Deploy  →  Live in ~60 seconds ✅
-```
+### Create a Docker Space
 
-Every future `git push` to `main` **automatically triggers a redeploy** — no manual action needed.
+1. Go to [huggingface.co/new-space](https://huggingface.co/new-space) → SDK: **Docker**
+2. Add these files to the Space repository:
 
-**Alternative — Vercel CLI:**
-```bash
-npm install -g vercel
-vercel --prod
-```
-
-<br/>
-
-### 🟡 ML API → Hugging Face Spaces
-
-**1. Create a new Space** at [huggingface.co/new-space](https://huggingface.co/new-space) → SDK: **Docker**
-
-**2. Add these files to the Space repository:**
-
-`requirements.txt`
+**`requirements.txt`**
 ```
 flask==3.0.0
 tensorflow==2.15.0
@@ -887,7 +498,7 @@ numpy==1.26.4
 gunicorn==21.2.0
 ```
 
-`Dockerfile`
+**`Dockerfile`**
 ```dockerfile
 FROM python:3.10-slim
 WORKDIR /app
@@ -898,69 +509,79 @@ EXPOSE 7860
 CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--timeout", "120", "app:app"]
 ```
 
-**3. Upload** `app.py` and `plant_disease_model.keras`
-*(use Git LFS if the `.keras` file exceeds 100 MB)*
+3. Upload `app.py` and `plant_disease_model.keras`
+   *(use Git LFS if the `.keras` file exceeds 100 MB)*
 
-**4. Once built**, your inference endpoint is:
-```
-https://your-username-your-space-name.hf.space/predict
-```
+4. Once built, your endpoint is:
+   ```
+   https://your-username-your-space-name.hf.space/predict
+   ```
 
-**5. Paste** this URL as `VITE_HF_API_ENDPOINT` in your Vercel environment variables.
-
-<br/>
+5. Set this as `VITE_HF_API_ENDPOINT` in your Vercel environment variables.
 
 ---
 
-<div align="center">
+## 🌐 Deployment Guide
+
+### Frontend → Vercel
+
+```
+1. Push to GitHub
+   ↓
+2. vercel.com/new → Import AgroSense-AI repo
+   ↓
+3. Add all VITE_ environment variables in Vercel dashboard
+   ↓
+4. Deploy → live in ~60 seconds ✅
+```
+
+Every `git push` to `main` automatically triggers a redeploy.
+
+**Or via CLI:**
+```bash
+npm install -g vercel
+vercel --prod
+```
+
+### Backend → Railway / Render
+
+The Express `server.js` can be deployed to any Node.js host. Recommended options:
+
+- **Railway** — `railway up` deploys automatically from GitHub
+- **Render** — connect repo, set `npm run start` as the start command
+- **Fly.io** — good for low-latency global deployments
+
+Set `MONGODB_URI` and any server-side API keys as environment variables on your chosen host.
+
+---
 
 ## 🗺️ Roadmap
 
-</div>
+### ✅ Completed
+- Plant disease detection — ResNet-50 · 38 classes · Flask API on Hugging Face
+- Crop recommendation engine — 7 soil/climate inputs · 22+ crops
+- Real-time weather dashboard — live conditions for any location worldwide
+- AI farming chatbot — LLM-powered agricultural assistant
+- User authentication — Auth0 integration
+- Data persistence — MongoDB + Mongoose backend
+- Responsive UI — mobile, tablet, and desktop
+- Production deployment — Vercel (frontend) + Hugging Face Spaces (ML API)
 
-<br/>
-
-<div align="center">
-
-### ✅ &nbsp; Completed
-
-</div>
-
-- [x] **Plant Disease Detection** — ResNet-50 model · Flask API on Hugging Face · 38 disease classes
-- [x] **Crop Recommendation Engine** — ML model · 7 soil/climate inputs · 22+ crops
-- [x] **Real-Time Weather Dashboard** — live conditions for any location
-- [x] **AI Farming Chatbot** — LLM-powered agricultural assistant
-- [x] **Responsive UI** — fully functional on mobile, tablet, and desktop
-- [x] **Production Deployment** — Vercel (frontend) + Hugging Face Spaces (ML API)
-
-<div align="center">
-
-### 🔜 &nbsp; Planned
-
-</div>
-
-- [ ] **Fertilizer Recommender** — optimal NPK dosage based on crop + detected soil deficit
-- [ ] **Pest Identification** — extend the image model to classify insect pests from photos
-- [ ] **Multi-language Support** — Hindi, Tamil, Telugu, Marathi for rural farmer accessibility
-- [ ] **Progressive Web App (PWA)** — offline capability with lightweight on-device model
-- [ ] **Disease History Tracker** — log and visualise detections per field over time
-- [ ] **Yield Forecasting** — predict expected harvest based on crop, soil, and climate data
-- [ ] **Government Scheme Finder** — surface relevant Indian agricultural subsidies and MSP data
-- [ ] **Voice Input for Chatbot** — hands-free voice queries for low-literacy users
-
-<br/>
+### 🔜 Planned
+- **Multi-language support** — Hindi, Tamil, Telugu, Marathi for rural accessibility
+- **Fertilizer recommender** — optimal NPK dosage based on crop + soil deficit
+- **Pest identification** — extend image model to classify insect pests
+- **Progressive Web App (PWA)** — offline capability with on-device model
+- **Disease history tracker** — log and visualise detections per field over time
+- **Yield forecasting** — predict harvest based on crop, soil, and climate data
+- **Government scheme finder** — surface relevant Indian agricultural subsidies and MSP data
+- **Voice input for chatbot** — hands-free queries for low-literacy users
 
 ---
 
-<div align="center">
-
 ## 🤝 Contributing
 
-</div>
-
-<br/>
-
-All contributions — bug fixes, new features, documentation improvements, or ideas — are genuinely welcome.
+All contributions are welcome — bug fixes, new features, translations, or documentation improvements.
 
 ```bash
 # 1. Fork the repo on GitHub, then clone your fork
@@ -968,86 +589,57 @@ git clone https://github.com/YOUR_USERNAME/AgroSense-AI.git
 cd AgroSense-AI
 
 # 2. Create a clearly named branch
-git checkout -b feature/pest-identification
-#   or
-git checkout -b fix/chatbot-timeout-handling
+git checkout -b feature/hindi-language-support
+# or
+git checkout -b fix/hf-cold-start-handling
 
-# 3. Make your changes, then commit with a conventional message
+# 3. Make your changes and commit with a conventional message
 git add .
-git commit -m "feat: add pest identification page and Hugging Face API call"
-#   Prefixes: feat | fix | docs | style | refactor | test | chore
+git commit -m "feat: add Hindi translation strings via react-i18next"
+# Prefixes: feat | fix | docs | style | refactor | test | chore
 
 # 4. Push and open a Pull Request
-git push origin feature/pest-identification
+git push origin feature/hindi-language-support
 ```
 
-<br/>
-
-**A few guidelines to keep things smooth:**
-
-- 🔍 Check open issues before creating a new one — your idea may already be tracked
-- 🧪 Test changes locally before opening a PR
-- 🧹 Keep PRs focused — one feature or fix per PR
-- 🙋 For major changes, open an issue first to discuss the approach
-
-<br/>
+**Guidelines:**
+- Check open issues before creating a new one
+- Test changes locally before opening a PR
+- Keep PRs focused — one feature or fix per PR
+- For major changes, open an issue first to discuss the approach
 
 ---
 
-<div align="center">
-
 ## 📄 License
 
-</div>
-
-<br/>
-
-This project is released under the **MIT License** — use it, fork it, build on it, with attribution.
+This project is released under the **MIT License** — use it, fork it, build on it.
 
 ```
-MIT License  —  Copyright (c) 2024 Sanjay Chaurasia
+MIT License — Copyright (c) 2024 Sanjay Chaurasia
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
+copies of the Software.
 ```
-
-<br/>
 
 ---
 
-<br/>
-
 <div align="center">
 
-<img src="https://github.com/Sanjaychaurasia04.png" width="88" style="border-radius: 50%;" alt="Sanjay Chaurasia"/>
+**Built by [Sanjay Chaurasia](https://github.com/Sanjaychaurasia04)**
+*Full-Stack Developer · ML Engineer · Building technology for social impact*
 
 <br/>
 
-### Sanjay Chaurasia
-
-*Full-Stack Developer &nbsp;·&nbsp; ML Engineer &nbsp;·&nbsp; Building technology for social impact*
-
-<br/>
-
-[![GitHub](https://img.shields.io/badge/GitHub-@Sanjaychaurasia04-181717?style=for-the-badge&logo=github)](https://github.com/Sanjaychaurasia04)
-&nbsp;&nbsp;
-[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-AgroSense%20AI-2d6a4f?style=for-the-badge)](https://agro-sense-ai-smoky.vercel.app/)
-
-<br/><br/>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=1b4332,2d6a4f,40916c,52b788&height=120&section=footer&text=Made%20with%20%E2%9D%A4%EF%B8%8F%20for%20the%20farming%20community&fontSize=16&fontColor=ffffff&fontAlignY=65&animation=fadeIn" width="100%"/>
+[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-agro--sense--ai--smoky.vercel.app-2d6a4f?style=for-the-badge)](https://agro-sense-ai-smoky.vercel.app/)
+[![GitHub Stars](https://img.shields.io/github/stars/Sanjaychaurasia04/AgroSense-AI?style=for-the-badge&logo=github)](https://github.com/Sanjaychaurasia04/AgroSense-AI)
 
 <br/>
 
-*If AgroSense AI helped you or inspired you — a* ⭐ *on GitHub means the world.*
+*If AgroSense AI helped you or inspired you — a ⭐ on GitHub means the world.*
 
-[![GitHub Stars](https://img.shields.io/github/stars/Sanjaychaurasia04/AgroSense-AI?style=social)](https://github.com/Sanjaychaurasia04/AgroSense-AI)
+<img src="https://capsule-render.vercel.app/api?type=waving&color=1b4332,2d6a4f,40916c,52b788&height=120&section=footer&animation=fadeIn" />
 
 </div>
