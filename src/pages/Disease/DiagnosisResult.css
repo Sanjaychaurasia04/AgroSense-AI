@@ -1,18 +1,22 @@
 /* ── DiagnosisResult.css ───────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg:       #0f1117;
-  --surface:  #1a1d27;
-  --surface2: #22263a;
-  --border:   #2e3350;
-  --accent:   #7c6af7;
-  --accent2:  #4ade80;
-  --text:     #e2e8f0;
-  --muted:    #94a3b8;
+  --bg:       #202c21;
+  --surface:  #2c4532;
+  --surface2: #364f3a;
+  --border:   #3f7c51;
+  --accent:   #4ade80;   /* theme.wheat */
+  --accent2:  #86efac;   /* theme.sprout */
+  --text:     #ffffff;
+  --muted:    #a3f0be;   /* theme.sage */
+  --muted2:   #bbf7d0;   /* theme.sky */
+  --rain:     #6ee7a0;
+  --danger:   #f87171;
+  --warning:  #fbbf24;
   --radius:   12px;
-  --mono:     'IBM Plex Mono', monospace;
-  --sans:     'Sora', sans-serif;
+  --sans:     'DM Sans', sans-serif;
+  --serif:    'Playfair Display', serif;
 }
 
 .dr-root {
@@ -29,20 +33,27 @@
 /* ── Cards ──────────────────────────────────────────────────── */
 .dr-card {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(74,222,128,0.15);
   border-radius: var(--radius);
   padding: 22px 24px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  transition: box-shadow .2s;
+}
+.dr-card:hover {
+  box-shadow: 0 4px 28px rgba(0,0,0,0.3);
 }
 .dr-card-primary {
   border-left: 4px solid var(--accent);
+  background: linear-gradient(135deg, rgba(44,69,50,0.9), rgba(54,79,58,0.6));
 }
 .dr-card-primary.dr-healthy {
   border-left-color: var(--accent2);
+  background: linear-gradient(135deg, rgba(44,69,50,0.9), rgba(32,44,33,0.8));
 }
 
 /* Disease title */
 .dr-disease-title {
-  font-family: var(--sans);
+  font-family: var(--serif);
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--text);
@@ -59,51 +70,55 @@
   color: var(--muted);
   margin-bottom: 18px;
   padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(74,222,128,0.12);
 }
 .dr-meta strong { color: var(--text); }
 .dr-conf-pct {
-  font-family: var(--mono);
+  font-family: 'DM Sans', monospace;
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* Severity badges */
+/* ── Severity badges ────────────────────────────────────────── */
 .dr-severity {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: .06em;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  padding: 2px 8px;
+  padding: 2px 9px;
   border-radius: 4px;
 }
-.dr-severity-high     { background: rgba(239,68,68,.18);   color: #f87171; }
-.dr-severity-moderate { background: rgba(251,146,60,.18);  color: #fb923c; }
-.dr-severity-low      { background: rgba(234,179,8,.18);   color: #facc15; }
-.dr-severity-none     { background: rgba(74,222,128,.18);  color: #4ade80; }
+.dr-severity-high     { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
+.dr-severity-moderate { background: rgba(251,146,60,0.15);  color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.dr-severity-low      { background: rgba(251,191,36,0.15);  color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+.dr-severity-none     { background: rgba(74,222,128,0.12);  color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
 
-/* Sections (Description / Symptoms / Treatment / Prevention) */
+/* ── Sections ───────────────────────────────────────────────── */
 .dr-sections { display: flex; flex-direction: column; gap: 16px; }
 
 .dr-section-heading {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--accent2);
   margin-bottom: 6px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--border);
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(74,222,128,0.12);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
 }
 .dr-section-body {
   font-size: 0.875rem;
   color: var(--muted);
-  line-height: 1.7;
+  line-height: 1.75;
 }
 .dr-section-body p  { margin-bottom: 4px; }
 .dr-section-body ul { padding-left: 18px; }
-.dr-section-body li { margin-bottom: 2px; }
+.dr-section-body li { margin-bottom: 3px; }
+.dr-section-body li::marker { color: var(--accent); }
 
-/* ── Subtitle for alt / chart cards ────────────────────────── */
+/* ── Subtitle ───────────────────────────────────────────────── */
 .dr-sub-title {
+  font-family: var(--serif);
   font-size: 1rem;
   font-weight: 700;
   color: var(--text);
@@ -111,13 +126,18 @@
 }
 
 /* ── Alternative Possibilities ─────────────────────────────── */
-.dr-alternatives { display: flex; flex-direction: column; gap: 14px; }
+.dr-alternatives { display: flex; flex-direction: column; gap: 12px; }
 
 .dr-alt-item {
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border: 1px solid rgba(74,222,128,0.12);
+  border-radius: 9px;
   padding: 12px 16px;
   background: var(--surface2);
+  transition: border-color .2s, background .2s;
+}
+.dr-alt-item:hover {
+  border-color: rgba(74,222,128,0.25);
+  background: rgba(63,124,81,0.15);
 }
 .dr-alt-header {
   display: flex;
@@ -142,7 +162,7 @@
   color: var(--muted);
   line-height: 1.8;
 }
-.dr-alt-meta li { margin: 0; }
+.dr-alt-meta li::marker { color: var(--accent2); }
 
 /* ── Confidence Distribution chart ─────────────────────────── */
 .dr-chart-card { padding: 18px 22px; }
@@ -155,23 +175,23 @@
 }
 .dr-chart-icon  { font-size: 1.1rem; }
 .dr-chart-title {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .07em;
+  letter-spacing: .09em;
   color: var(--muted);
 }
 .dr-chart-disease {
+  font-family: var(--serif);
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text);
   text-align: center;
-  margin-bottom: 16px;
-  font-family: var(--mono);
+  margin-bottom: 18px;
 }
 
 /* Bars */
-.dr-bars { display: flex; flex-direction: column; gap: 8px; }
+.dr-bars { display: flex; flex-direction: column; gap: 9px; }
 
 .dr-bar-row {
   display: grid;
@@ -179,10 +199,9 @@
   align-items: center;
   gap: 10px;
   font-size: 0.78rem;
-  font-family: var(--mono);
 }
 @media (max-width: 600px) {
-  .dr-bar-row { grid-template-columns: 140px 1fr 36px; }
+  .dr-bar-row { grid-template-columns: 130px 1fr 36px; }
 }
 
 .dr-bar-label {
@@ -190,25 +209,34 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 0.77rem;
 }
 .dr-bar-primary .dr-bar-label { color: var(--text); font-weight: 600; }
 
 .dr-bar-track {
-  background: var(--surface2);
+  background: rgba(74,222,128,0.08);
   border-radius: 4px;
   height: 10px;
   overflow: hidden;
+  border: 1px solid rgba(74,222,128,0.1);
 }
 .dr-bar-fill {
   height: 100%;
-  background: var(--accent);
+  background: linear-gradient(90deg, #3f7c51, #4ade80);
   border-radius: 4px;
-  transition: width .6s cubic-bezier(.4,0,.2,1);
+  transition: width .65s cubic-bezier(.4,0,.2,1);
 }
-.dr-bar-primary .dr-bar-fill { background: var(--accent2); }
+.dr-bar-primary .dr-bar-fill {
+  background: linear-gradient(90deg, #3a8c52, #86efac);
+  box-shadow: 0 0 8px rgba(134,239,172,0.3);
+}
 
 .dr-bar-pct {
   color: var(--muted);
   text-align: right;
+  font-size: 0.77rem;
 }
-.dr-bar-primary .dr-bar-pct { color: var(--accent2); font-weight: 600; }
+.dr-bar-primary .dr-bar-pct {
+  color: var(--accent2);
+  font-weight: 700;
+}
