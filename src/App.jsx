@@ -38,30 +38,22 @@ const LoadingScreen = () => (
 
 const App = () => {
   const {
-    isLoading,       // true while Auth0 checks for an existing session
-    isAuthenticated, // true only for Google login (Auth0 SDK-managed)
-    user,            // Google profile: { name, email, picture, sub, … }
+    isLoading,
+    isAuthenticated,
+    user,
     logout,
   } = useAuth0();
 
-  // 'landing' | 'auth' | 'app'
   const [view, setView]     = useState('landing');
   const [active, setActive] = useState('dashboard');
-
-  // ── otpUser: populated after a successful email OTP login.
-  // For Google login, we use the `user` object from useAuth0() instead.
-  // This is needed because Auth0's SDK only tracks Google sessions,
-  // not our custom backend-based OTP sessions.
   const [otpUser, setOtpUser] = useState(null);
 
-  // ── Derive the active user from whichever auth method was used ──
-  // Google login  → user (from Auth0 SDK)
-  // Email OTP     → otpUser (from our backend verify response)
+  // Derive the active user from whichever auth method was used
+  // Google login → user (from Auth0 SDK)
+  // Email OTP    → otpUser (from our backend verify response)
   const activeUser = isAuthenticated ? user : otpUser;
 
-  // ── Sync Auth0 Google session → view ─────────────────────────
-  // When Auth0 finishes loading and finds an existing Google session,
-  // skip the landing/auth screens and go straight to the app.
+  // Sync Auth0 Google session → view
   useEffect(() => {
     if (isLoading) return;
     if (isAuthenticated) {
@@ -69,50 +61,43 @@ const App = () => {
     }
   }, [isLoading, isAuthenticated]);
 
-  // ── Called by AuthPage on success (both Google + OTP paths) ──
-  // userData = { name, email, picture } — passed by AuthPage after OTP verify,
-  // or after Google redirect (in that case Auth0's useAuth0() also updates).
+  // Called by AuthPage on success (both Google + OTP paths)
   const handleAuthSuccess = (userData) => {
     if (userData) {
-      setOtpUser(userData); // store OTP user locally
+      setOtpUser(userData);
     }
     setView('app');
   };
 
   const handleLogout = () => {
-    setOtpUser(null); // clear any OTP session
+    setOtpUser(null);
     if (isAuthenticated) {
-      // Only call Auth0 logout if they signed in with Google
       logout({ logoutParams: { returnTo: window.location.origin } });
     }
     setView('landing');
   };
 
+  // ── Pages — activeUser passed to every page that saves data ──
   const pages = {
-    dashboard:       <DiseaseDetection />,
-    'crop-advisory': <CropAdvisory />,
-    market:          <Market />,
-    calendar:        <CropCalendar />,
-    schemes:         <Schemes />,
-    community:       <Community />,
-    'ai-chat':       <Chatbot />,
-    disease:         <DiseaseDetection />,
-    weather:         <Weather />,
-    fertilizer:      <Fertilizer />,
-    chatbot:         <Chatbot />,
+    dashboard:       <DiseaseDetection user={activeUser} />,
+    'crop-advisory': <CropAdvisory     user={activeUser} />,
+    market:          <Market           user={activeUser} />,
+    calendar:        <CropCalendar     user={activeUser} />,
+    schemes:         <Schemes          user={activeUser} />,
+    community:       <Community        user={activeUser} />,
+    'ai-chat':       <Chatbot          user={activeUser} />,
+    disease:         <DiseaseDetection user={activeUser} />,
+    weather:         <Weather          user={activeUser} />,
+    fertilizer:      <Fertilizer       user={activeUser} />,
+    chatbot:         <Chatbot          user={activeUser} />,
   };
 
-  // ── Wait for Auth0 to finish its session check ────────────────
   if (isLoading) return <LoadingScreen />;
 
-  // ── Landing page ──────────────────────────────────────────────
   if (view === 'landing') {
-    return (
-      <LandingPage onGetStarted={() => setView('auth')} />
-    );
+    return <LandingPage onGetStarted={() => setView('auth')} />;
   }
 
-  // ── Auth page ─────────────────────────────────────────────────
   if (view === 'auth') {
     return (
       <AuthPage
@@ -122,7 +107,6 @@ const App = () => {
     );
   }
 
-  // ── Main app ──────────────────────────────────────────────────
   return (
     <div style={{
       width: '100vw', minHeight: '100vh',
@@ -138,7 +122,7 @@ const App = () => {
       <Header
         active={active}
         setActive={setActive}
-        user={activeUser}        // works for both Google and OTP login
+        user={activeUser}
         onLoginClick={() => setView('auth')}
         onLogout={handleLogout}
       />

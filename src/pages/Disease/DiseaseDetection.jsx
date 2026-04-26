@@ -1,332 +1,366 @@
 // src/pages/Disease/DiseaseDetection.jsx
 import React, { useState, useRef } from 'react';
 import { Client } from "@gradio/client";
-import UploadBox from './UploadBox';
+import { saveDetection } from '../../utils/db';
 import DiagnosisResult from './DiagnosisResult';
 import './DiseaseDetection.css';
 
-const DiseaseDetection = () => {
+const DiseaseDetection = ({ user }) => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const [fileName, setFileName] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState(null);
-  const [error, setError] = useState(null);
-  const [dragOver, setDragOver] = useState(false);
+  const [previewUrl, setPreviewUrl]     = useState(null);
+  const [fileName, setFileName]         = useState('');
+  const [loading, setLoading]           = useState(false);
+  const [results, setResults]           = useState(null);
+  const [error, setError]               = useState(null);
+  const [dragOver, setDragOver]         = useState(false);
 
   const fileInputRef = useRef(null);
-  const resultsRef = useRef(null);
+  const resultsRef   = useRef(null);
+
+  /* ─── helpers ─────────────────────────────────────────── */
 
   const handleFile = (file) => {
     if (!file || !file.type.startsWith('image/')) {
       setError('Please upload a valid image file (JPG, PNG, WEBP)');
       return;
     }
-
     setSelectedFile(file);
     setFileName(file.name);
     setError(null);
     setResults(null);
-
     const reader = new FileReader();
-    reader.onload = (e) => {
-      setPreviewUrl(e.target.result);
-    };
+    reader.onload = (e) => setPreviewUrl(e.target.result);
     reader.readAsDataURL(file);
   };
 
-  const handleBrowseClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFileInputChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
-    }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setDragOver(true);
-  };
-
-  const handleDragLeave = () => {
-    setDragOver(false);
-  };
-
-  const handleDrop = (e) => {
+  const handleDragOver  = (e) => { e.preventDefault(); setDragOver(true); };
+  const handleDragLeave = ()  => setDragOver(false);
+  const handleDrop      = (e) => {
     e.preventDefault();
     setDragOver(false);
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      handleFile(file);
-    } else {
-      setError('Please drop a valid image file');
+    if (file?.type.startsWith('image/')) handleFile(file);
+    else setError('Please drop a valid image file');
+  };
+
+  const formatDiseaseName = (raw = '') =>
+    raw.split(/[_\s]+/)
+       .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+       .join(' ');
+
+  /**
+   * Parse the markdown string the Gradio API returns.
+   * Returns: { cropName, diseaseName, diseaseLabel, treatmentText, fullMarkdown }
+   */
+  const parseMarkdownDiagnosis = (markdown = '') => {
+    // Heading → full display name  e.g. "## Tomato Septoria Leaf Spot"
+    const headingMatch = markdown.match(/^#+\s+(.+)/m);
+    const fullName     = headingMatch ? headingMatch[1].trim() : 'Unknown Disease';
+
+    // Plant field
+    const plantMatch = markdown.match(/\*\*Plant[^*]*\*\*[:\s]+([^\n*]+)/i);
+    const cropName   = plantMatch ? plantMatch[1].trim() : 'Unknown';
+
+    // diseaseName = fullName minus the crop prefix
+    const diseaseName = fullName
+      .replace(new RegExp('^' + cropName + '[\\s_]*', 'i'), '')
+      .trim() || fullName;
+
+    // diseaseLabel for DB  e.g. "Tomato___Septoria_Leaf_Spot"
+    const diseaseLabel = `${cropName}___${diseaseName.replace(/\s+/g, '_')}`;
+
+    // Treatment block
+    const treatmentMatch = markdown.match(
+      /(?:Recommended Actions|Management|Treatment)[^\n]*\n([\s\S]*?)(?:\n#{1,3}|$)/i
+    );
+    let treatmentText = treatmentMatch
+      ? treatmentMatch[1].replace(/\*\*/g, '').replace(/^[-*]\s+/gm, '').trim()
+      : '';
+    if (!treatmentText) {
+      treatmentText = markdown
+        .replace(/^#+.*/gm, '')
+        .replace(/\*\*/g, '')
+        .replace(/^[-*]\s+/gm, '')
+        .trim()
+        .slice(0, 500);
     }
+
+    return { cropName, diseaseName, diseaseLabel, treatmentText, fullMarkdown: markdown };
   };
 
-  const extractConfidence = (confidenceObj) => {
-    if (!confidenceObj || typeof confidenceObj !== "object") return 0;
-    const values = Object.values(confidenceObj);
-    return Math.max(...values) / 100;
+  /**
+   * Build the rich "alternatives" array the HuggingFace UI shows.
+   * The second element of result.data is an object like:
+   *   { "Tomato___Septoria_leaf_spot": 63.6, "Strawberry___Leaf_scorch": 16.18, … }
+   */
+  const buildAlternatives = (altObj = {}) =>
+    Object.entries(altObj)
+      .filter(([, v]) => typeof v === 'number' && isFinite(v))
+      .sort(([, a], [, b]) => b - a)
+      .map(([label, pct]) => {
+        const parts      = label.split('___');
+        const crop       = formatDiseaseName(parts[0] || '');
+        const disease    = formatDiseaseName(parts[1] || '');
+        const confidence = parseFloat((pct > 1 ? pct : pct * 100).toFixed(2));
+        return { label, crop, disease, displayName: `${crop} ${disease}`.trim(), confidence };
+      });
+
+  /**
+   * Extract primary confidence from whatever shape the 3rd API field returns.
+   * Returns a value in 0-100 range.
+   */
+  const extractConfidence100 = (raw) => {
+    if (typeof raw === 'number' && isFinite(raw))
+      return raw > 1 ? raw : raw * 100;
+
+    if (raw && typeof raw === 'object') {
+      const vals = [];
+      const walk = (o) => {
+        for (const v of Object.values(o)) {
+          if (typeof v === 'number' && isFinite(v)) vals.push(v);
+          else if (v && typeof v === 'object') walk(v);
+        }
+      };
+      walk(raw);
+      if (vals.length) {
+        const max = Math.max(...vals);
+        return max > 1 ? max : max * 100;
+      }
+    }
+    return 0;
   };
 
-  const formatDiseaseName = (name) => {
-    if (!name) return 'Unknown';
-    return name
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
+  const getSeverity = (conf100) => {
+    if (conf100 >= 85) return 'HIGH';
+    if (conf100 >= 70) return 'MODERATE';
+    if (conf100 >= 50) return 'LOW';
+    return 'NONE';
   };
+
+  /* ─── main analyse ────────────────────────────────────── */
 
   const analyzeImage = async () => {
     if (!selectedFile) return;
-
     setLoading(true);
     setError(null);
     setResults(null);
 
     try {
-      const client = await Client.connect(
-        "sanjaychaurasia1/krishimitra-ai",
-        {
-          hf_token: import.meta.env.VITE_HF_TOKEN,
-        }
-      );
-
-      const result = await client.predict("/predict", {
-        image: selectedFile,
+      const client = await Client.connect('sanjaychaurasia1/krishimitra-ai', {
+        hf_token: import.meta.env.VITE_HF_TOKEN,
       });
 
-      console.log('API Response:', result.data);
+      const response = await client.predict('/predict', { image: selectedFile });
+      console.log('API Response:', response.data);
 
-      const [diagnosis, alternatives, confidenceData] = result.data;
-      
-      // Parse alternatives if they exist
-      let parsedAlternatives = [];
-      if (alternatives && typeof alternatives === 'object') {
-        parsedAlternatives = Object.entries(alternatives)
-          .map(([name, conf]) => ({
-            name: formatDiseaseName(name),
-            confidence: (conf / 100).toFixed(2)
-          }))
-          .sort((a, b) => b.confidence - a.confidence)
-          .slice(0, 3);
+      // API returns [diagnosisMarkdown, alternativesObj, confidenceData]
+      const [diagnosisMarkdown, alternativesObj, confidenceRaw] = response.data;
+
+      const { cropName, diseaseName, diseaseLabel, treatmentText, fullMarkdown }
+        = parseMarkdownDiagnosis(typeof diagnosisMarkdown === 'string' ? diagnosisMarkdown : '');
+
+      const alternatives  = buildAlternatives(
+        alternativesObj && typeof alternativesObj === 'object' && !Array.isArray(alternativesObj)
+          ? alternativesObj : {}
+      );
+
+      // Primary confidence: prefer the top alternative entry which matches our label
+      const topAlt        = alternatives.find(a => a.label === diseaseLabel) || alternatives[0];
+      let confidence100   = topAlt ? topAlt.confidence : extractConfidence100(confidenceRaw);
+      if (!isFinite(confidence100)) confidence100 = 0;
+
+      const severity      = getSeverity(confidence100);
+      const isHealthy     = diseaseName.toLowerCase().includes('healthy');
+
+      // Full confidence distribution for chart
+      const distribution  = alternatives.map(a => ({
+        label:      a.displayName,
+        confidence: a.confidence,
+      }));
+
+      setResults({
+        cropName,
+        diseaseName,
+        diseaseLabel,
+        confidence:   confidence100,
+        severity,
+        isHealthy,
+        treatmentText,
+        fullMarkdown,
+        alternatives: alternatives.slice(1, 4), // top 3 excluding primary
+        distribution,                            // all for bar chart
+      });
+
+      /* ── Save to DB ──────────────────────────────────────
+         Schema: diseaseLabel, diseaseName, cropName,
+                 confidence (0-100), isHealthy, treatmentAdvice, imageUrl
+      */
+      if (user?.sub) {
+        try {
+          await saveDetection(user.sub, {
+            diseaseLabel,
+            diseaseName,
+            cropName,
+            confidence:      parseFloat(confidence100.toFixed(2)),
+            isHealthy,
+            treatmentAdvice: treatmentText || 'Regular monitoring and proper plant care recommended',
+            imageUrl:        '',
+          });
+          console.log('✅ Saved to DB:', diseaseLabel, confidence100.toFixed(2) + '%');
+        } catch (dbErr) {
+          console.error('⚠️ DB save failed:', dbErr.message);
+        }
+      } else {
+        console.warn('⚠️ No user logged in — detection not saved');
       }
 
-      const parsedResult = {
-        disease: formatDiseaseName(diagnosis),
-        solution: alternatives?.treatment || alternatives?.solution || 
-          'Regular monitoring and proper plant care recommended',
-        confidence: extractConfidence(confidenceData),
-        alternatives: parsedAlternatives,
-        severity: getSeverityLevel(extractConfidence(confidenceData)),
-      };
-
-      setResults(parsedResult);
-
       setTimeout(() => {
-        if (resultsRef.current) {
-          resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
 
     } catch (err) {
       console.error('Analysis error:', err);
-      setError(err.message || "Failed to analyze image. Please try again.");
+      setError(err.message || 'Failed to analyze image. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const getSeverityLevel = (confidence) => {
-    if (confidence > 0.85) return 'high';
-    if (confidence > 0.7) return 'moderate';
-    if (confidence > 0.5) return 'low';
-    return 'none';
+  const clearImage = () => {
+    setSelectedFile(null); setPreviewUrl(null); setFileName('');
+    setResults(null); setError(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const clearImage = () => {
-    setSelectedFile(null);
-    setPreviewUrl(null);
-    setFileName('');
-    setResults(null);
-    setError(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
+  /* ─── render ──────────────────────────────────────────── */
 
   return (
-    <div className="disease-detection">
-      {/* Animated Background */}
-      <div className="bg-animation">
-        <div className="bg-leaf leaf-1">🌿</div>
-        <div className="bg-leaf leaf-2">🍃</div>
-        <div className="bg-leaf leaf-3">🌱</div>
-        <div className="bg-leaf leaf-4">🍂</div>
-      </div>
-
-      <div className="wrapper">
-        {/* Header */}
-        <header className="header">
-          <div className="logo">
-            <div className="logo-icon">🌾</div>
-            <div className="logo-text">
-              <h1>KrishiMitra</h1>
-              <span>AI-Powered Plant Health Assistant</span>
+    <div className="dd-page">
+      {/* Header */}
+      <header className="dd-header">
+        <div className="dd-header-inner">
+          <div className="dd-logo">
+            <span className="dd-logo-icon">🌾</span>
+            <div>
+              <h1>KrishiMitra AI</h1>
+              <span>Plant Disease Detection</span>
             </div>
           </div>
-          <div className="model-badge">
-            <span className="badge-dot"></span>
+          <div className="dd-badge">
+            <span className="dd-badge-dot" />
             ResNet50 · 38 Classes
           </div>
-        </header>
-
-        {/* Hero Section */}
-        <div className="hero-section">
-          <div className="hero-content">
-            <div className="hero-eyebrow">
-              <span className="eyebrow-icon"></span>
-              Powered by Deep Learning
-            </div>
-            <h2>
-              Detect Plant Diseases<br />
-              <span className="highlight">Instantly & Accurately</span>
-            </h2>
-            <p>
-              Upload a photo of your plant's leaf. Our advanced ResNet50 model, 
-              trained on 87,000+ images, provides instant diagnosis and 
-              organic treatment recommendations.
-            </p>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-number">38</div>
-              <div className="stat-label">Disease Classes</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">95%</div>
-              <div className="stat-label">Accuracy</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">14</div>
-              <div className="stat-label">Crop Types</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">87k+</div>
-              <div className="stat-label">Training Images</div>
-            </div>
-          </div>
         </div>
+      </header>
 
-        {/* Upload Section */}
-        <div className="upload-section">
-          <div className="upload-container">
-            <div className="upload-header">
-              <h3>Upload Plant Image</h3>
-              <p>Supported formats: JPG, PNG, WEBP (Max 10MB)</p>
-            </div>
-            
-            <div className="upload-area">
-              <UploadBox
-                drag={dragOver}
-                setDrag={setDragOver}
-                preview={previewUrl}
-                handleFile={handleFile}
-                fileRef={fileInputRef}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              />
-              
-              {previewUrl && (
-                <div className="preview-container">
-                  <div className="preview-image">
-                    <img src={previewUrl} alt="Plant preview" />
-                    <button className="clear-btn" onClick={clearImage} title="Remove image">
-                      ✕
-                    </button>
+      <main className="dd-main">
+        {/* Two-column layout like HuggingFace */}
+        <div className="dd-split">
+
+          {/* LEFT — upload */}
+          <div className="dd-left">
+            <div className="dd-upload-label">Upload Plant Leaf Image</div>
+
+            {/* Drop zone */}
+            <div
+              className={`dd-dropzone ${dragOver ? 'drag-over' : ''} ${previewUrl ? 'has-preview' : ''}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => !previewUrl && fileInputRef.current.click()}
+            >
+              {previewUrl ? (
+                <>
+                  <img src={previewUrl} alt="Preview" className="dd-preview-img" />
+                  <div className="dd-preview-toolbar">
+                    <button className="dd-tool-btn" onClick={(e) => { e.stopPropagation(); fileInputRef.current.click(); }} title="Replace">📤</button>
+                    <button className="dd-tool-btn" onClick={(e) => { e.stopPropagation(); clearImage(); }} title="Remove">🗑️</button>
                   </div>
-                  <div className="preview-info">
-                    <span className="file-name">{fileName}</span>
-                    <span className="file-size">
-                      {(selectedFile?.size / 1024 / 1024).toFixed(2)} MB
-                    </span>
-                  </div>
+                </>
+              ) : (
+                <div className="dd-dropzone-placeholder">
+                  <div className="dd-upload-icon">📁</div>
+                  <p>Drop Image Here</p>
+                  <span>— or —</span>
+                  <button className="dd-browse-btn" onClick={(e) => { e.stopPropagation(); fileInputRef.current.click(); }}>
+                    Click to Upload
+                  </button>
+                  <small>JPG, PNG, WEBP · Max 10 MB</small>
                 </div>
               )}
             </div>
 
-            {selectedFile && (
-              <button
-                className={`analyze-btn ${loading ? 'loading' : ''}`}
-                onClick={analyzeImage}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner"></span>
-                    Analyzing Plant Health...
-                  </>
-                ) : (
-                  <>
-                    <span className="btn-icon">🔬</span>
-                    Analyze Plant Health
-                  </>
-                )}
-              </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+            />
+
+            {/* Detect button */}
+            <button
+              className={`dd-detect-btn ${loading ? 'dd-loading' : ''}`}
+              onClick={analyzeImage}
+              disabled={!selectedFile || loading}
+            >
+              {loading ? (
+                <><span className="dd-spinner" /> Analyzing…</>
+              ) : (
+                'Detect Disease'
+              )}
+            </button>
+
+            {/* Tips */}
+            <div className="dd-tips">
+              <strong>Tips for Best Results:</strong>
+              <ul>
+                <li>Take a clear photo of the affected leaf</li>
+                <li>Ensure good lighting</li>
+                <li>Focus on the diseased area</li>
+                <li>Include both healthy and infected tissue</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* RIGHT — results */}
+          <div className="dd-right" ref={resultsRef}>
+            {error && (
+              <div className="dd-error">
+                <span>⚠️</span>
+                <div>
+                  <strong>Analysis Failed</strong>
+                  <p>{error}</p>
+                  <button onClick={() => setError(null)}>Dismiss</button>
+                </div>
+              </div>
+            )}
+
+            {loading && (
+              <div className="dd-right-loading">
+                <div className="dd-spinner-lg" />
+                <p>Analyzing your plant image…</p>
+                <small>Our AI is examining disease patterns</small>
+              </div>
+            )}
+
+            {results && !loading && (
+              <DiagnosisResult result={results} />
+            )}
+
+            {!results && !loading && !error && (
+              <div className="dd-placeholder-result">
+                <span>🌿</span>
+                <p>Upload a leaf image and click <strong>Detect Disease</strong> to see results here.</p>
+              </div>
             )}
           </div>
         </div>
+      </main>
 
-        {/* Loading Animation */}
-        {loading && (
-          <div className="loading-overlay">
-            <div className="loading-content">
-              <div className="loading-spinner">
-                <div className="spinner-ring"></div>
-                <div className="spinner-leaf">🌿</div>
-              </div>
-              <p>Analyzing your plant image...</p>
-              <p className="loading-sub">Our AI is examining disease patterns</p>
-            </div>
-          </div>
-        )}
-
-        {/* Results Section */}
-        <div ref={resultsRef} className={`results-section ${results || error ? 'show' : ''}`}>
-          {error && (
-            <div className="error-card">
-              <div className="error-icon"></div>
-              <div className="error-content">
-                <h4>Analysis Failed</h4>
-                <p>{error}</p>
-                <button className="retry-btn" onClick={() => setError(null)}>
-                  Dismiss
-                </button>
-              </div>
-            </div>
-          )}
-          
-          {results && (
-            <DiagnosisResult result={results} />
-          )}
-        </div>
-
-        {/* Footer */}
-        <footer className="footer">
-          <div className="footer-content">
-            <p>Built to help farmers and gardeners</p>
-            <p className="footer-note">
-              <strong>KrishiMitra AI</strong> · ResNet50 Plant Disease Detection · 
-              For educational purposes only. Consult local experts for critical decisions.
-            </p>
-          </div>
-        </footer>
-      </div>
+      <footer className="dd-footer">
+        <p><strong>KrishiMitra AI</strong> · For educational purposes only. Consult local experts for critical decisions.</p>
+      </footer>
     </div>
   );
 };

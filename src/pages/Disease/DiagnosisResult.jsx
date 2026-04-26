@@ -1,101 +1,170 @@
 // src/pages/Disease/DiagnosisResult.jsx
 import React from 'react';
+import './DiagnosisResult.css';
 
-const DiagnosisResult = ({ result }) => {
-  if (!result) return null;
+/* ── tiny sub-components ──────────────────────────────────── */
 
-  const getSeverityColor = (severity) => {
-    const colors = {
-      high: '#ff4444',
-      moderate: '#ffa500',
-      low: '#ffd966',
-      none: '#4caf50'
-    };
-    return colors[severity] || '#95a5a6';
-  };
+const ConfidenceBar = ({ label, confidence, isPrimary }) => (
+  <div className={`dr-bar-row ${isPrimary ? 'dr-bar-primary' : ''}`}>
+    <span className="dr-bar-label">{label}</span>
+    <div className="dr-bar-track">
+      <div
+        className="dr-bar-fill"
+        style={{ width: `${confidence}%` }}
+      />
+    </div>
+    <span className="dr-bar-pct">{Math.round(confidence)}%</span>
+  </div>
+);
 
-  const getSeverityLabel = (severity) => {
-    const labels = {
-      high: '⚠️ High Risk',
-      moderate: '🟡 Moderate Risk',
-      low: '🟢 Low Risk',
-      none: '✅ Healthy'
-    };
-    return labels[severity] || severity;
-  };
+const SeverityBadge = ({ severity }) => (
+  <span className={`dr-severity dr-severity-${severity.toLowerCase()}`}>{severity}</span>
+);
+
+/* ── helpers ──────────────────────────────────────────────── */
+
+/**
+ * Parse a markdown blob into structured sections so we can render
+ * Description / Symptoms / Treatment / Prevention / etc. exactly like HuggingFace.
+ */
+const parseSections = (markdown = '') => {
+  const sections = [];
+  // Split on markdown headings (## or ###)
+  const parts = markdown.split(/\n(?=#{1,3}\s)/);
+  for (const part of parts) {
+    const lines   = part.trim().split('\n');
+    const heading = lines[0].replace(/^#+\s*/, '').trim();
+    const body    = lines.slice(1).join('\n').trim();
+    if (heading && body) sections.push({ heading, body });
+  }
+  return sections;
+};
+
+/**
+ * Render a section body: strip markdown bold, convert bullet lines to <li>.
+ */
+const SectionBody = ({ body }) => {
+  const lines = body.split('\n').map(l => l.replace(/\*\*/g, '').trim()).filter(Boolean);
+  const bullets = lines.filter(l => /^[-*•]/.test(l));
+  const prose   = lines.filter(l => !/^[-*•]/.test(l));
 
   return (
-    <div className="results-container">
-      {/* Main Result Card */}
-      <div className="result-card main-result">
-        <div className="result-header">
-          <div className="result-title">
-            <div className="title-badge">DETECTED CONDITION</div>
-            <h2 className="disease-name">{result.disease}</h2>
+    <div className="dr-section-body">
+      {prose.map((p, i) => <p key={i}>{p}</p>)}
+      {bullets.length > 0 && (
+        <ul>
+          {bullets.map((b, i) => <li key={i}>{b.replace(/^[-*•]\s*/, '')}</li>)}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+/* ── main component ───────────────────────────────────────── */
+
+const DiagnosisResult = ({ result }) => {
+  const {
+    cropName,
+    diseaseName,
+    confidence,
+    severity,
+    isHealthy,
+    treatmentText,
+    fullMarkdown,
+    alternatives = [],
+    distribution = [],
+  } = result;
+
+  const displayName = `${cropName} ${diseaseName}`.trim();
+  const sections    = parseSections(fullMarkdown || '');
+
+  // Fallback sections if markdown parsing yields nothing
+  const hasMarkdownSections = sections.length > 1;
+
+  return (
+    <div className="dr-root">
+
+      {/* ── Primary diagnosis card ───────────────────────── */}
+      <div className={`dr-card dr-card-primary ${isHealthy ? 'dr-healthy' : ''}`}>
+        <h2 className="dr-disease-title">{displayName}</h2>
+
+        <div className="dr-meta">
+          <span><strong>Plant:</strong> {cropName}</span>
+          <span>
+            <strong>Severity:</strong>{' '}
+            <SeverityBadge severity={severity} />
+          </span>
+          <span>
+            <strong>Confidence:</strong>{' '}
+            <span className="dr-conf-pct">{confidence.toFixed(1)}%</span>
+          </span>
+        </div>
+
+        {/* Render parsed markdown sections (Description, Symptoms, Treatment, Prevention…) */}
+        {hasMarkdownSections ? (
+          <div className="dr-sections">
+            {sections.map((s, i) => (
+              <div key={i} className="dr-section">
+                <h4 className="dr-section-heading">{s.heading}</h4>
+                <SectionBody body={s.body} />
+              </div>
+            ))}
           </div>
-          {result.severity && (
-            <div 
-              className="severity-badge"
-              style={{ backgroundColor: getSeverityColor(result.severity) }}
-            >
-              {getSeverityLabel(result.severity)}
+        ) : (
+          /* Fallback: plain treatment text */
+          treatmentText && (
+            <div className="dr-sections">
+              <div className="dr-section">
+                <h4 className="dr-section-heading">Treatment</h4>
+                <SectionBody body={treatmentText} />
+              </div>
             </div>
-          )}
-        </div>
-
-        {/* Confidence Bar */}
-        <div className="confidence-section">
-          <div className="confidence-header">
-            <span>AI Confidence Score</span>
-            <span className="confidence-value">{(result.confidence * 100).toFixed(1)}%</span>
-          </div>
-          <div className="confidence-bar">
-            <div 
-              className="confidence-fill"
-              style={{ 
-                width: `${result.confidence * 100}%`,
-                background: `linear-gradient(90deg, #6b8c42, ${getSeverityColor(result.severity)})`
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Treatment Solution */}
-        <div className="treatment-section">
-          <div className="section-header">
-            <span className="section-icon">💊</span>
-            <h3>Recommended Treatment</h3>
-          </div>
-          <p className="treatment-text">{result.solution}</p>
-        </div>
+          )
+        )}
       </div>
 
-      {/* Alternatives Section */}
-      {result.alternatives && result.alternatives.length > 0 && (
-        <div className="result-card alternatives-card">
-          <div className="section-header">
-            <span className="section-icon">🔄</span>
-            <h3>Other Possible Conditions</h3>
-          </div>
-          <div className="alternatives-list">
-            {result.alternatives.map((alt, idx) => (
-              <div key={idx} className="alternative-item">
-                <span className="alt-name">{alt.name}</span>
-                <span className="alt-confidence">{(alt.confidence * 100).toFixed(1)}%</span>
+      {/* ── Alternative Possibilities ────────────────────── */}
+      {alternatives.length > 0 && (
+        <div className="dr-card">
+          <h3 className="dr-sub-title">Alternative Possibilities</h3>
+          <div className="dr-alternatives">
+            {alternatives.map((alt, i) => (
+              <div key={i} className="dr-alt-item">
+                <div className="dr-alt-header">
+                  <span className="dr-alt-rank">{i + 1}.</span>
+                  <span className="dr-alt-name">{alt.displayName}</span>
+                </div>
+                <ul className="dr-alt-meta">
+                  <li>Confidence: {alt.confidence.toFixed(2)}%</li>
+                  <li>Severity: <SeverityBadge severity={alt.confidence >= 70 ? 'MODERATE' : 'LOW'} /></li>
+                  <li>Plant: {alt.crop}</li>
+                </ul>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Disclaimer */}
-      <div className="disclaimer-card">
-        <div className="disclaimer-icon">ℹ️</div>
-        <div className="disclaimer-text">
-          <strong>Important Note:</strong> This is an AI-powered diagnosis tool for educational purposes. 
-          For critical decisions, please consult with local agricultural experts or plant pathologists.
+      {/* ── Confidence Distribution chart ────────────────── */}
+      {distribution.length > 0 && (
+        <div className="dr-card dr-chart-card">
+          <div className="dr-chart-header">
+            <span className="dr-chart-icon">📊</span>
+            <span className="dr-chart-title">Confidence Distribution</span>
+          </div>
+          <h3 className="dr-chart-disease">{displayName}</h3>
+          <div className="dr-bars">
+            {distribution.map((d, i) => (
+              <ConfidenceBar
+                key={i}
+                label={d.label}
+                confidence={d.confidence}
+                isPrimary={i === 0}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

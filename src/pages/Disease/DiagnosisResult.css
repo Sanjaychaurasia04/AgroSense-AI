@@ -1,0 +1,214 @@
+/* ── DiagnosisResult.css ───────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@400;600;700&display=swap');
+
+:root {
+  --bg:       #0f1117;
+  --surface:  #1a1d27;
+  --surface2: #22263a;
+  --border:   #2e3350;
+  --accent:   #7c6af7;
+  --accent2:  #4ade80;
+  --text:     #e2e8f0;
+  --muted:    #94a3b8;
+  --radius:   12px;
+  --mono:     'IBM Plex Mono', monospace;
+  --sans:     'Sora', sans-serif;
+}
+
+.dr-root {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: fadeUp .35s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.dr-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+}
+.dr-card-primary {
+  border-left: 4px solid var(--accent);
+}
+.dr-card-primary.dr-healthy {
+  border-left-color: var(--accent2);
+}
+
+/* Disease title */
+.dr-disease-title {
+  font-family: var(--sans);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+
+/* Meta row */
+.dr-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.dr-meta strong { color: var(--text); }
+.dr-conf-pct {
+  font-family: var(--mono);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Severity badges */
+.dr-severity {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.dr-severity-high     { background: rgba(239,68,68,.18);   color: #f87171; }
+.dr-severity-moderate { background: rgba(251,146,60,.18);  color: #fb923c; }
+.dr-severity-low      { background: rgba(234,179,8,.18);   color: #facc15; }
+.dr-severity-none     { background: rgba(74,222,128,.18);  color: #4ade80; }
+
+/* Sections (Description / Symptoms / Treatment / Prevention) */
+.dr-sections { display: flex; flex-direction: column; gap: 16px; }
+
+.dr-section-heading {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.dr-section-body {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.dr-section-body p  { margin-bottom: 4px; }
+.dr-section-body ul { padding-left: 18px; }
+.dr-section-body li { margin-bottom: 2px; }
+
+/* ── Subtitle for alt / chart cards ────────────────────────── */
+.dr-sub-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+
+/* ── Alternative Possibilities ─────────────────────────────── */
+.dr-alternatives { display: flex; flex-direction: column; gap: 14px; }
+
+.dr-alt-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: var(--surface2);
+}
+.dr-alt-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.dr-alt-rank {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+.dr-alt-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+.dr-alt-meta {
+  list-style: disc;
+  padding-left: 18px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.dr-alt-meta li { margin: 0; }
+
+/* ── Confidence Distribution chart ─────────────────────────── */
+.dr-chart-card { padding: 18px 22px; }
+
+.dr-chart-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.dr-chart-icon  { font-size: 1.1rem; }
+.dr-chart-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+}
+.dr-chart-disease {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 16px;
+  font-family: var(--mono);
+}
+
+/* Bars */
+.dr-bars { display: flex; flex-direction: column; gap: 8px; }
+
+.dr-bar-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 44px;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  font-family: var(--mono);
+}
+@media (max-width: 600px) {
+  .dr-bar-row { grid-template-columns: 140px 1fr 36px; }
+}
+
+.dr-bar-label {
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dr-bar-primary .dr-bar-label { color: var(--text); font-weight: 600; }
+
+.dr-bar-track {
+  background: var(--surface2);
+  border-radius: 4px;
+  height: 10px;
+  overflow: hidden;
+}
+.dr-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+.dr-bar-primary .dr-bar-fill { background: var(--accent2); }
+
+.dr-bar-pct {
+  color: var(--muted);
+  text-align: right;
+}
+.dr-bar-primary .dr-bar-pct { color: var(--accent2); font-weight: 600; }

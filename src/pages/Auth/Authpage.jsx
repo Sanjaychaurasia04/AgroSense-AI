@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import Icon from '../../components/common/Icon';
+import { syncUser, updateUser } from '../../utils/db';   // ← NEW
 
 // ── Backend base URL ──────────────────────────────────────────
-
 const API = import.meta.env.VITE_API_URL || 'https://agro-sense-ai-backend.vercel.app';
 
 const sendOtp = async (email) => {
@@ -228,7 +228,7 @@ const OtpStep = ({ email, onVerified, onBack, loading, setLoading, errors, setEr
     setErrors({}); setLoading(true);
     try {
       const result = await verifyOtp(email, otp);
-      onVerified(result.user);   // { name, email, picture }
+      onVerified(result.user);   // { name, email, sub, picture }
     } catch (err) {
       const msg = err.message.toLowerCase().includes('wrong') || err.message.toLowerCase().includes('verification code')
         ? 'Incorrect OTP. Please check and try again.'
@@ -289,10 +289,23 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
   ];
   const crops = ['Rice','Wheat','Maize','Cotton','Sugarcane','Tomato','Potato','Soybean','Groundnut'];
 
+  // ── Google login: sync to MongoDB after redirect back ────────
   useEffect(() => {
     if (isAuthenticated && user) {
-      const u = { name: user.name, email: user.email, picture: user.picture };
-      setAuthUser(u); setSuccess(true);
+      const u = {
+        name:    user.name,
+        email:   user.email,
+        picture: user.picture,
+        sub:     user.sub,
+      };
+
+      // Save / update user in MongoDB (fire and forget — don't block UI)
+      syncUser({ sub: u.sub, name: u.name, email: u.email })
+        .then(() => console.log('✅ Google user synced to MongoDB'))
+        .catch(err => console.error('⚠️ Failed to sync Google user:', err));
+
+      setAuthUser(u);
+      setSuccess(true);
       setTimeout(() => onAuthSuccess?.(u), 900);
     }
   }, [isAuthenticated, user]);
@@ -337,13 +350,36 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
     finally { setLoading(false); }
   };
 
-  const handleOtpVerified = (verifiedUser) => {
+  // ── OTP verified: sync user to MongoDB ───────────────────────
+  const handleOtpVerified = async (verifiedUser) => {
     const u = {
       name:    verifiedUser?.name    || (mode === 'login' ? loginEmail.split('@')[0] : regName),
       email:   verifiedUser?.email   || (mode === 'login' ? loginEmail : regEmail),
       picture: verifiedUser?.picture || null,
+      sub:     verifiedUser?.sub     || null,
     };
-    setAuthUser(u); setSuccess(true);
+
+    // Sync to MongoDB if we have a sub (Auth0 user ID)
+    if (u.sub && u.email) {
+      try {
+        await syncUser({ sub: u.sub, name: u.name, email: u.email });
+        console.log('✅ OTP user synced to MongoDB');
+
+        // For new registrations, also save extra profile fields
+        if (mode === 'register') {
+          await updateUser(u.sub, {
+            location: { city: '', state: regState || '' },
+          });
+          console.log('✅ Registration profile saved');
+        }
+      } catch (err) {
+        // Don't block login if DB sync fails — just log it
+        console.error('⚠️ Failed to sync OTP user to DB:', err);
+      }
+    }
+
+    setAuthUser(u);
+    setSuccess(true);
     setTimeout(() => onAuthSuccess?.(u), 900);
   };
 

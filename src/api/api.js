@@ -161,6 +161,7 @@ export const demoWeather = {
   ],
 };
 
+
 export const demoChatResponses = {
   blight:     "Late Blight is caused by Phytophthora infestans. Apply Mancozeb 75% WP @ 2g/L. Remove infected parts.",
   fertilizer: "For Rice: NPK 120-60-60 kg/ha. Split nitrogen into 3 doses.",
