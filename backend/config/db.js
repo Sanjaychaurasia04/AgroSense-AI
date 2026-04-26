@@ -5,15 +5,27 @@ const connectDB = async () => {
     const uri = process.env.MONGO_URI;
 
     if (!uri) {
-      throw new Error("MONGO_URI is undefined — check your .env file");
+      throw new Error("MONGO_URI is undefined — check Vercel ENV");
     }
 
-    const conn = await mongoose.connect(uri, { dbName: "agrosense" });
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    // ✅ Reuse existing connection (VERY IMPORTANT)
+    if (mongoose.connections[0].readyState) {
+      console.log("⚡ MongoDB already connected");
+      return;
+    }
+
+    const conn = await mongoose.connect(uri, {
+      dbName: "agrosense",
+      bufferCommands: false,
+    });
+
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`MongoDB connection error: ${error.message}`);
-    process.exit(1);
+    console.error("❌ MongoDB connection error:", error.message);
+
+    // ❌ DO NOT use process.exit in serverless
+    throw error;
   }
 };
 
-export default connectDB;  // ← this line must be present
+export default connectDB;
