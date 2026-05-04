@@ -50,7 +50,6 @@ const buildForecast = (list = []) => {
 const fetchOWM = async (input) => {
   const pin = isPinCode(input);
 
-  // Use zip endpoint for PIN codes, q= for city names
   const query = pin
     ? `zip=${input.trim()},IN`
     : `q=${encodeURIComponent(input.trim())}`;
@@ -70,15 +69,15 @@ const fetchOWM = async (input) => {
     throw new Error(`Weather fetch failed (${curRes.status}). Please try again.`);
   }
 
-  const cur    = await curRes.json();
-  const fData  = await fRes.json();
+  const cur   = await curRes.json();
+  const fData = await fRes.json();
 
   return {
     city:      `${cur.name}, ${cur.sys?.country || 'IN'}`,
     temp:      Math.round(cur.main.temp),
     feels:     Math.round(cur.main.feels_like),
     humidity:  cur.main.humidity,
-    wind:      Math.round((cur.wind?.speed || 0) * 3.6), // m/s → km/h
+    wind:      Math.round((cur.wind?.speed || 0) * 3.6),
     condition: cur.weather?.[0]?.description || 'Clear',
     icon:      mapIcon(cur.weather?.[0]?.icon),
     forecast:  buildForecast(fData.list || []),
@@ -87,7 +86,6 @@ const fetchOWM = async (input) => {
 
 // ── Main export ───────────────────────────────────────────────
 export const getRealWeather = async (input) => {
-  // Try backend first (4s timeout), fall through to OWM if unavailable
   try {
     const res = await fetch(
       `${BACKEND}/weather?location=${encodeURIComponent(input.trim())}`,
@@ -95,7 +93,7 @@ export const getRealWeather = async (input) => {
     );
     if (res.ok) {
       const data = await res.json();
-      if (data?.temp != null) return data; // backend returned ready-to-use data
+      if (data?.temp != null) return data;
     }
   } catch {
     console.warn('Backend unavailable, using OpenWeatherMap directly.');
@@ -106,18 +104,16 @@ export const getRealWeather = async (input) => {
 
 // ── GPS → city name (for "Use My Location") ──────────────────
 export const getWeatherByCoords = async (lat, lon) => {
-  // OWM reverse geocoding
   try {
     const res = await fetch(
       `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${OWM_KEY}`
     );
     if (res.ok) {
       const json = await res.json();
-      if (json?.[0]?.name) return json[0].name; // just return city name, no country
+      if (json?.[0]?.name) return json[0].name;
     }
   } catch { /* ignore */ }
 
-  // Nominatim fallback
   try {
     const res = await fetch(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
@@ -154,13 +150,12 @@ export const demoWeather = {
   city: "Pune, IN", temp: 28, feels: 31, humidity: 72, wind: 14,
   condition: "Partly Cloudy", icon: "cloud",
   forecast: [
-    { day: "Mon", icon: "rain",  temp: 24, rain: 80, advice: "Delay spraying. Heavy rain expected."       },
-    { day: "Tue", icon: "cloud", temp: 27, rain: 30, advice: "Good for light irrigation."                 },
-    { day: "Wed", icon: "sun",   temp: 32, rain: 5,  advice: "Ideal for harvesting."                     },
-    { day: "Thu", icon: "cloud", temp: 26, rain: 45, advice: "Moderate wind. Secure shade nets."          },
+    { day: "Mon", icon: "rain",  temp: 24, rain: 80, advice: "Delay spraying. Heavy rain expected."      },
+    { day: "Tue", icon: "cloud", temp: 27, rain: 30, advice: "Good for light irrigation."                },
+    { day: "Wed", icon: "sun",   temp: 32, rain: 5,  advice: "Ideal for harvesting."                    },
+    { day: "Thu", icon: "cloud", temp: 26, rain: 45, advice: "Moderate wind. Secure shade nets."         },
   ],
 };
-
 
 export const demoChatResponses = {
   blight:     "Late Blight is caused by Phytophthora infestans. Apply Mancozeb 75% WP @ 2g/L. Remove infected parts.",
@@ -175,7 +170,9 @@ export const demoDiseaseResult = {
 };
 
 
-// ── REPLACE getMandiPrices at the bottom of src/api/api.js ───
+// ─────────────────────────────────────────────────────────────
+// Mandi Prices  (AGMARKNET via data.gov.in)
+// ─────────────────────────────────────────────────────────────
 
 const DATAGOV_KEY = import.meta.env?.VITE_DATAGOV_API_KEY;
 
@@ -197,21 +194,27 @@ const fetchWithFallbackDates = async (params) => {
     const dateStr = formatDate(date);
 
     const p = new URLSearchParams(params);
-    p.set('filters[Arrival_Date]', dateStr);
+    p.set('filters[arrival_date]', dateStr); // ✅ FIX 1: was filters[Arrival_Date]
     p.set('limit', 100);
 
-    const res = await fetch(`/api/mandi?${p.toString()}`, {
-      signal: AbortSignal.timeout(12000),
-    });
+    try {
+      const res = await fetch(`/api/mandi?${p.toString()}`, {
+        signal: AbortSignal.timeout(12000),
+      });
 
-    if (res.status === 403) throw new Error('Invalid API key — check VITE_DATAGOV_API_KEY in .env');
-    if (!res.ok) continue;
+      if (res.status === 403) throw new Error('Invalid API key — check VITE_DATAGOV_API_KEY in .env');
+      if (!res.ok) continue;
 
-    const data = await res.json();
-    if (data.records?.length > 0) {
-      return { records: data.records, fetchedDate: dateStr };
+      const data = await res.json();
+      if (data.records?.length > 0) {
+        return { records: data.records, fetchedDate: dateStr };
+      }
+    } catch (e) {
+      if (e.message.includes('API key')) throw e; // re-throw auth errors
+      console.warn(`[Mandi] date=${dateStr} failed:`, e.message);
     }
   }
+
   return { records: [], fetchedDate: null };
 };
 
@@ -221,24 +224,27 @@ export const getMandiPrices = async (state = '', commodity = '', limit = 60) => 
     format: 'json',
     offset: 0,
   };
-  if (state && state !== 'All States') baseParams['filters[State]']     = state;
-  if (commodity)                        baseParams['filters[Commodity]'] = commodity;
+
+  // ✅ FIX 2: state filter uses state.keyword (as per API schema field_exposed)
+  if (state && state !== 'All States') baseParams['filters[state.keyword]'] = state;
+  // ✅ FIX 3: commodity filter is lowercase (API returns lowercase field names)
+  if (commodity)                        baseParams['filters[commodity]']     = commodity;
 
   const { records: raw, fetchedDate } = await fetchWithFallbackDates(baseParams);
 
   if (!raw.length) throw new Error('No recent mandi data found. Try a different filter.');
 
-  // Normalise field names
+  // Normalise — API returns all-lowercase field names
   const normalised = raw.map(r => ({
-    commodity:    r.Commodity    || r.commodity    || '',
-    market:       r.Market       || r.market       || '',
-    state:        r.State        || r.state        || '',
-    district:     r.District     || r.district     || '',
-    variety:      r.Variety      || r.variety      || '',
-    min_price:    r.Min_Price    || r.min_price    || '0',
-    max_price:    r.Max_Price    || r.max_price    || '0',
-    modal_price:  r.Modal_Price  || r.modal_price  || '0',
-    arrival_date: r.Arrival_Date || r.arrival_date || fetchedDate || '',
+    commodity:    r.commodity    || '',
+    market:       r.market       || '',
+    state:        r.state        || '',
+    district:     r.district     || '',
+    variety:      r.variety      || '',
+    min_price:    r.min_price    || '0',
+    max_price:    r.max_price    || '0',
+    modal_price:  r.modal_price  || '0',
+    arrival_date: r.arrival_date || fetchedDate || '',
   }));
 
   // Deduplicate: keep only one entry per commodity+market (highest modal price wins)
