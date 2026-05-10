@@ -114,13 +114,14 @@ const Skeleton = () => (
 
 // ── Main ──────────────────────────────────────────────────────
 const Market = () => {
-  const [records, setRecords]         = useState([]);
-  const [loading, setLoading]         = useState(true);
-  const [error, setError]             = useState('');
-  const [isDemo, setIsDemo]           = useState(false);
-  const [search, setSearch]           = useState('');
+  const [records, setRecords]             = useState([]);
+  const [loading, setLoading]             = useState(true);
+  const [error, setError]                 = useState('');
+  const [isDemo, setIsDemo]               = useState(false);
+  const [search, setSearch]               = useState('');
   const [selectedState, setSelectedState] = useState('All States');
-  const [lastUpdated, setLastUpdated] = useState(null);
+  const [dataDate, setDataDate]           = useState(null);   // DD/MM/YYYY from API
+  const [lastFetched, setLastFetched]     = useState(null);   // wall-clock time
 
   const fetchPrices = useCallback(async (st = 'All States', crop = '') => {
     setLoading(true);
@@ -130,17 +131,20 @@ const Market = () => {
       if (!data.records?.length) throw new Error('No records for this filter.');
       setRecords(data.records);
       setIsDemo(false);
-      setLastUpdated(new Date());
+      setDataDate(data.date);           // e.g. "09/05/2026"
+      setLastFetched(new Date());
     } catch (err) {
+      console.error('[Market] fetch error:', err.message);
       setError(err.message);
       setRecords(FALLBACK);
       setIsDemo(true);
+      setDataDate(null);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => { fetchPrices(); }, []);
+  useEffect(() => { fetchPrices(); }, [fetchPrices]);
 
   const handleState = (s) => { setSelectedState(s); setSearch(''); fetchPrices(s, ''); };
   const handleCrop  = (c) => { const next = search === c ? '' : c; setSearch(next); fetchPrices(selectedState, next); };
@@ -161,7 +165,7 @@ const Market = () => {
           <p style={{ color:theme.mist, opacity:0.65, fontSize:13 }}>
             {isDemo
               ? '⚠️ Showing demo data — API unavailable'
-              : `✅ Live · AGMARKNET · ${lastUpdated?.toLocaleTimeString('en-IN') ?? ''}`
+              : `✅ Live · AGMARKNET · Data date: ${dataDate ?? '—'} · Fetched at ${lastFetched?.toLocaleTimeString('en-IN') ?? ''}`
             }
           </p>
         </div>

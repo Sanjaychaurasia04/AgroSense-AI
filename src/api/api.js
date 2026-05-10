@@ -24,7 +24,7 @@ const forecastAdvice = (temp, rainPct) => {
 
 // ── Build forecast from OWM 5-day/3hr list ───────────────────
 const buildForecast = (list = []) => {
-  const seen = new Set();
+  const seen   = new Set();
   const result = [];
   for (const item of list) {
     const date = new Date(item.dt * 1000);
@@ -48,8 +48,7 @@ const buildForecast = (list = []) => {
 
 // ── Core OWM fetcher — handles BOTH city name and PIN code ────
 const fetchOWM = async (input) => {
-  const pin = isPinCode(input);
-
+  const pin   = isPinCode(input);
   const query = pin
     ? `zip=${input.trim()},IN`
     : `q=${encodeURIComponent(input.trim())}`;
@@ -98,7 +97,6 @@ export const getRealWeather = async (input) => {
   } catch {
     console.warn('Backend unavailable, using OpenWeatherMap directly.');
   }
-
   return fetchOWM(input);
 };
 
@@ -150,10 +148,10 @@ export const demoWeather = {
   city: "Pune, IN", temp: 28, feels: 31, humidity: 72, wind: 14,
   condition: "Partly Cloudy", icon: "cloud",
   forecast: [
-    { day: "Mon", icon: "rain",  temp: 24, rain: 80, advice: "Delay spraying. Heavy rain expected."      },
-    { day: "Tue", icon: "cloud", temp: 27, rain: 30, advice: "Good for light irrigation."                },
-    { day: "Wed", icon: "sun",   temp: 32, rain: 5,  advice: "Ideal for harvesting."                    },
-    { day: "Thu", icon: "cloud", temp: 26, rain: 45, advice: "Moderate wind. Secure shade nets."         },
+    { day: "Mon", icon: "rain",  temp: 24, rain: 80, advice: "Delay spraying. Heavy rain expected."   },
+    { day: "Tue", icon: "cloud", temp: 27, rain: 30, advice: "Good for light irrigation."             },
+    { day: "Wed", icon: "sun",   temp: 32, rain: 5,  advice: "Ideal for harvesting."                  },
+    { day: "Thu", icon: "cloud", temp: 26, rain: 45, advice: "Moderate wind. Secure shade nets."      },
   ],
 };
 
@@ -176,81 +174,78 @@ export const demoDiseaseResult = {
 
 const DATAGOV_KEY = import.meta.env?.VITE_DATAGOV_API_KEY;
 
-// Format date as DD/MM/YYYY for the API filter
-const formatDate = (date) => {
-  const d = String(date.getDate()).padStart(2, '0');
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const y = date.getFullYear();
-  return `${d}/${m}/${y}`;
-};
+// Routed through Vite proxy in vite.config.js:
+//   '/api/mandi'  →  'https://api.data.gov.in/resource/9ef84268-...'
+// Can also call direct (no CORS issue confirmed by debug test 6).
+const DATAGOV_BASE = '/api/mandi';
 
-// Try today, then walk back up to 7 days to find the most recent data
-const fetchWithFallbackDates = async (params) => {
-  const today = new Date();
+// ─────────────────────────────────────────────────────────────
+// KEY FINDING FROM DEBUG:
+//   filters[Arrival_Date]=DD/MM/YYYY  →  always returns 0 records
+//   No date filter                    →  returns 8068 live records ✅
+//
+// The API does not support date filtering via query params.
+// We fetch all records and let the UI filter by commodity/state.
+// The arrival_date field in each record tells us how fresh the data is.
+// ─────────────────────────────────────────────────────────────
 
-  for (let daysBack = 0; daysBack <= 7; daysBack++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - daysBack);
-    const dateStr = formatDate(date);
-
-    const p = new URLSearchParams(params);
-    p.set('filters[arrival_date]', dateStr); // ✅ FIX 1: was filters[Arrival_Date]
-    p.set('limit', 100);
-
-    try {
-      const res = await fetch(`/api/mandi?${p.toString()}`, {
-        signal: AbortSignal.timeout(12000),
-      });
-
-      if (res.status === 403) throw new Error('Invalid API key — check VITE_DATAGOV_API_KEY in .env');
-      if (!res.ok) continue;
-
-      const data = await res.json();
-      if (data.records?.length > 0) {
-        return { records: data.records, fetchedDate: dateStr };
-      }
-    } catch (e) {
-      if (e.message.includes('API key')) throw e; // re-throw auth errors
-      console.warn(`[Mandi] date=${dateStr} failed:`, e.message);
-    }
+export const getMandiPrices = async (state = '', commodity = '') => {
+  if (!DATAGOV_KEY) {
+    throw new Error('VITE_DATAGOV_API_KEY is not set in your .env file.');
   }
 
-  return { records: [], fetchedDate: null };
-};
-
-export const getMandiPrices = async (state = '', commodity = '', limit = 60) => {
-  const baseParams = {
+  const params = new URLSearchParams({
     'api-key': DATAGOV_KEY,
-    format: 'json',
-    offset: 0,
-  };
+    format:    'json',
+    limit:     '100',
+    offset:    '0',
+  });
 
-  // ✅ FIX 2: state filter uses state.keyword (as per API schema field_exposed)
-  if (state && state !== 'All States') baseParams['filters[state.keyword]'] = state;
-  // ✅ FIX 3: commodity filter is lowercase (API returns lowercase field names)
-  if (commodity)                        baseParams['filters[commodity]']     = commodity;
+  // State filter — uses .keyword suffix for Elasticsearch exact-match
+  if (state && state !== 'All States') {
+    params.set('filters[state.keyword]', state);
+  }
 
-  const { records: raw, fetchedDate } = await fetchWithFallbackDates(baseParams);
+  // Commodity filter — lowercase field name
+  if (commodity) {
+    params.set('filters[commodity]', commodity);
+  }
 
-  if (!raw.length) throw new Error('No recent mandi data found. Try a different filter.');
+  const url = `${DATAGOV_BASE}?${params.toString()}`;
+  console.log('[Mandi] fetching:', url);
 
-  // Normalise — API returns all-lowercase field names
-  const normalised = raw.map(r => ({
+  const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
+
+  if (res.status === 401 || res.status === 403) {
+    throw new Error(`API auth error (${res.status}). Check VITE_DATAGOV_API_KEY in .env`);
+  }
+  if (!res.ok) {
+    throw new Error(`API error (${res.status}). Please try again.`);
+  }
+
+  const data = await res.json();
+
+  if (!data.records?.length) {
+    throw new Error('No mandi data found. Try a different state or crop.');
+  }
+
+  // Normalise field values
+  const normalised = data.records.map(r => ({
     commodity:    r.commodity    || '',
     market:       r.market       || '',
     state:        r.state        || '',
     district:     r.district     || '',
     variety:      r.variety      || '',
-    min_price:    r.min_price    || '0',
-    max_price:    r.max_price    || '0',
-    modal_price:  r.modal_price  || '0',
-    arrival_date: r.arrival_date || fetchedDate || '',
+    min_price:    String(r.min_price   ?? '0'),
+    max_price:    String(r.max_price   ?? '0'),
+    modal_price:  String(r.modal_price ?? '0'),
+    arrival_date: r.arrival_date || '',
   }));
 
-  // Deduplicate: keep only one entry per commodity+market (highest modal price wins)
+  // Deduplicate: one entry per commodity+market (highest modal price wins)
   const seen = new Map();
   for (const r of normalised) {
-    const key = `${r.commodity}||${r.market}`;
+    const key      = `${r.commodity}||${r.market}`;
     const existing = seen.get(key);
     if (!existing || Number(r.modal_price) > Number(existing.modal_price)) {
       seen.set(key, r);
@@ -258,5 +253,13 @@ export const getMandiPrices = async (state = '', commodity = '', limit = 60) => 
   }
 
   const deduped = Array.from(seen.values());
-  return { records: deduped, total: deduped.length, date: fetchedDate };
+
+  // Derive the data date from the records themselves (most common arrival_date)
+  const dateCounts = {};
+  for (const r of deduped) {
+    if (r.arrival_date) dateCounts[r.arrival_date] = (dateCounts[r.arrival_date] || 0) + 1;
+  }
+  const dataDate = Object.keys(dateCounts).sort((a, b) => dateCounts[b] - dateCounts[a])[0] || null;
+
+  return { records: deduped, total: deduped.length, date: dataDate };
 };
