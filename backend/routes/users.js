@@ -4,19 +4,34 @@ import User from "../models/User.js";
 const router = express.Router();
 
 // POST /api/users/sync
-// Called right after Auth0 login to upsert the user into MongoDB.
-// Body: { auth0Id, name, email }
+// Called after ANY Auth0 login (OTP or Google) to upsert the user into MongoDB.
+// Body: { auth0Id, name, email, picture? }
+// Note: `name` falls back to the part before @ in email if not provided,
+// which can happen with some Google accounts on first login.
 router.post("/sync", async (req, res) => {
   try {
-    const { auth0Id, name, email } = req.body;
+    const { auth0Id, name, email, picture } = req.body;
 
-    if (!auth0Id || !name || !email) {
-      return res.status(400).json({ error: "auth0Id, name and email are required" });
+    if (!auth0Id || !email) {
+      return res.status(400).json({ error: "auth0Id and email are required" });
+    }
+
+    // Derive a display name if Auth0 didn't send one (edge case with Google)
+    const resolvedName = name?.trim() || email.split("@")[0];
+
+    const updateFields = {
+      name: resolvedName,
+      email: email.toLowerCase(),
+    };
+
+    // Store profile picture if provided (Google sends this, OTP doesn't)
+    if (picture) {
+      updateFields.picture = picture;
     }
 
     const user = await User.findOneAndUpdate(
       { auth0Id },
-      { $set: { name, email } },
+      { $set: updateFields },
       { upsert: true, new: true, runValidators: true }
     );
 

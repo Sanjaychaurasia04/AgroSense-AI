@@ -23,14 +23,16 @@ const request = async (method, path, body) => {
 // ─── Users ──────────────────────────────────────────────────────────────────
 
 /**
- * Call this immediately after Auth0 login to sync the user into MongoDB.
- * @param {{ sub: string, name: string, email: string }} auth0User — from useAuth0()
+ * Call this immediately after Auth0 login (Google OR OTP) to upsert the
+ * user into MongoDB.
+ * @param {{ sub: string, name: string, email: string, picture?: string }} auth0User
  */
 export const syncUser = (auth0User) =>
   request("POST", "/api/users/sync", {
-    auth0Id: auth0User.sub,
-    name: auth0User.name,
-    email: auth0User.email,
+    auth0Id:  auth0User.sub,
+    name:     auth0User.name,
+    email:    auth0User.email,
+    picture:  auth0User.picture || "",   // ← Google sends this; OTP won't
   });
 
 export const getUser = (auth0Id) =>

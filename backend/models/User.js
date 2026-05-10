@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
+    // Profile picture URL — populated by Google login, empty for OTP users
+    picture: {
+      type: String,
+      default: "",
+    },
     location: {
       city: { type: String, default: "" },
       state: { type: String, default: "" },

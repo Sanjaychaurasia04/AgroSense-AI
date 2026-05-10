@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { Auth0Provider } from '@auth0/auth0-react';
 import './index.css';
 import App from './App.jsx';
+import AuthSync from './components/AuthSync.jsx';   // ← add this import
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')).render(
         redirect_uri: window.location.origin,
       }}
     >
+      <AuthSync />   {/* ← add this line */}
       <App />
     </Auth0Provider>
   </StrictMode>,

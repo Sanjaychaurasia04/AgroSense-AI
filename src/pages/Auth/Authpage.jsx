@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import Icon from '../../components/common/Icon';
-import { syncUser, updateUser } from '../../utils/db';   // ← NEW
+import { syncUser, updateUser } from '../../utils/db';
 
 // ── Backend base URL ──────────────────────────────────────────
 const API = import.meta.env.VITE_API_URL || 'https://agro-sense-ai-backend.vercel.app';
@@ -282,6 +282,10 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
   const [regState, setRegState]     = useState('');
   const [regCrop, setRegCrop]       = useState('');
 
+  // Guard: track whether we've already handled this Auth0 session so the
+  // useEffect doesn't fire again on re-renders or strict-mode double-invocation.
+  const googleSyncedRef = useRef(false);
+
   const indianStates = [
     'Andhra Pradesh','Assam','Bihar','Chhattisgarh','Gujarat','Haryana','Himachal Pradesh',
     'Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Odisha','Punjab',
@@ -289,30 +293,45 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
   ];
   const crops = ['Rice','Wheat','Maize','Cotton','Sugarcane','Tomato','Potato','Soybean','Groundnut'];
 
-  // ── Google login: sync to MongoDB after redirect back ────────
+  // ── Google login: sync to MongoDB once after Auth0 redirect ──
   useEffect(() => {
-    if (isAuthenticated && user) {
+    // Skip if Auth0 is still loading, user not authenticated, or we already ran
+    if (auth0Loading || !isAuthenticated || !user) return;
+    if (googleSyncedRef.current) return;
+    googleSyncedRef.current = true;
+
+    const syncGoogleUser = async () => {
       const u = {
-        name:    user.name,
+        name:    user.name    || user.nickname || user.email,
         email:   user.email,
-        picture: user.picture,
+        picture: user.picture || '',
         sub:     user.sub,
       };
 
-      // Save / update user in MongoDB (fire and forget — don't block UI)
-      syncUser({ sub: u.sub, name: u.name, email: u.email })
-        .then(() => console.log('✅ Google user synced to MongoDB'))
-        .catch(err => console.error('⚠️ Failed to sync Google user:', err));
+      try {
+        // syncUser now sends picture too (fixed in db.js)
+        await syncUser({ sub: u.sub, name: u.name, email: u.email, picture: u.picture });
+        // Persist auth0Id for other API calls throughout the app
+        localStorage.setItem('auth0Id', u.sub);
+        console.log('✅ Google user synced to MongoDB');
+      } catch (err) {
+        // DB failure must NOT block the login — just log it
+        console.error('⚠️ Failed to sync Google user:', err);
+      }
 
       setAuthUser(u);
       setSuccess(true);
       setTimeout(() => onAuthSuccess?.(u), 900);
-    }
-  }, [isAuthenticated, user]);
+    };
+
+    syncGoogleUser();
+  }, [auth0Loading, isAuthenticated, user]);   // ← correct deps; googleSyncedRef is a ref, not state
 
   const handleGoogleLogin = () => {
     setLoading(true);
-    loginWithRedirect({ authorizationParams: { connection: 'google-oauth2', prompt: 'select_account' } });
+    loginWithRedirect({
+      authorizationParams: { connection: 'google-oauth2', prompt: 'select_account' },
+    });
   };
 
   const validateLoginEmail = () => {
@@ -350,32 +369,33 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
     finally { setLoading(false); }
   };
 
-  // ── OTP verified: sync user to MongoDB ───────────────────────
+  // ── OTP verified: sync to MongoDB then hand off to the app ───
   const handleOtpVerified = async (verifiedUser) => {
+    // verifiedUser comes from your /auth/verify-otp response: { name, email, sub, picture? }
     const u = {
       name:    verifiedUser?.name    || (mode === 'login' ? loginEmail.split('@')[0] : regName),
       email:   verifiedUser?.email   || (mode === 'login' ? loginEmail : regEmail),
-      picture: verifiedUser?.picture || null,
+      picture: verifiedUser?.picture || '',   // OTP users won't have one; that's fine
       sub:     verifiedUser?.sub     || null,
     };
 
-    // Sync to MongoDB if we have a sub (Auth0 user ID)
-    if (u.sub && u.email) {
-      try {
-        await syncUser({ sub: u.sub, name: u.name, email: u.email });
-        console.log('✅ OTP user synced to MongoDB');
+    try {
+      // syncUser now sends picture (harmless empty string for OTP)
+      await syncUser({ sub: u.sub, name: u.name, email: u.email, picture: u.picture });
+      // Persist auth0Id for API calls throughout the rest of the app
+      if (u.sub) localStorage.setItem('auth0Id', u.sub);
+      console.log('✅ OTP user synced to MongoDB');
 
-        // For new registrations, also save extra profile fields
-        if (mode === 'register') {
-          await updateUser(u.sub, {
-            location: { city: '', state: regState || '' },
-          });
-          console.log('✅ Registration profile saved');
-        }
-      } catch (err) {
-        // Don't block login if DB sync fails — just log it
-        console.error('⚠️ Failed to sync OTP user to DB:', err);
+      // For new registrations, also persist the extra profile fields
+      if (mode === 'register' && u.sub) {
+        await updateUser(u.sub, {
+          location: { city: '', state: regState || '' },
+        });
+        console.log('✅ Registration profile saved');
       }
+    } catch (err) {
+      // DB failure must NOT block the login — just log it
+      console.error('⚠️ Failed to sync OTP user to DB:', err);
     }
 
     setAuthUser(u);
@@ -383,7 +403,10 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
     setTimeout(() => onAuthSuccess?.(u), 900);
   };
 
-  const switchMode = (m) => { setMode(m); setStep('form'); setErrors({}); setApiError(''); setSuccess(false); };
+  const switchMode = (m) => {
+    setMode(m); setStep('form'); setErrors({}); setApiError(''); setSuccess(false);
+  };
+
   const activeEmail = mode === 'login' ? loginEmail : regEmail;
 
   if (auth0Loading) return (
@@ -470,16 +493,27 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
               <div style={{ width: 60, height: 60, borderRadius: '50%', margin: '0 auto 20px', background: 'rgba(74,222,128,0.12)', border: '2px solid rgba(74,222,128,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 30px rgba(74,222,128,0.18)' }}>
                 <Icon name="check" size={26} color="#4ade80" />
               </div>
-              {authUser?.picture && <img src={authUser.picture} alt="profile" style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid rgba(74,222,128,0.4)', margin: '0 auto 12px', display: 'block' }} />}
-              <h3 style={{ color: '#f0fdf4', fontFamily: "'Playfair Display', serif", fontSize: 22, marginBottom: 8 }}>{mode === 'login' ? 'Welcome back!' : 'Account created!'}</h3>
+              {authUser?.picture && (
+                <img src={authUser.picture} alt="profile" style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid rgba(74,222,128,0.4)', margin: '0 auto 12px', display: 'block' }} />
+              )}
+              <h3 style={{ color: '#f0fdf4', fontFamily: "'Playfair Display', serif", fontSize: 22, marginBottom: 8 }}>
+                {mode === 'login' ? 'Welcome back!' : 'Account created!'}
+              </h3>
               {authUser?.name && <p style={{ color: '#86efac', fontSize: 14, marginBottom: 4 }}>{authUser.name}</p>}
               <p style={{ color: 'rgba(200,230,201,0.5)', fontSize: 13 }}>Redirecting to your dashboard…</p>
             </div>
           )}
 
           {!success && step === 'otp' && (
-            <OtpStep email={activeEmail} onVerified={handleOtpVerified} onBack={() => setStep('form')}
-              loading={loading} setLoading={setLoading} errors={errors} setErrors={setErrors} />
+            <OtpStep
+              email={activeEmail}
+              onVerified={handleOtpVerified}
+              onBack={() => setStep('form')}
+              loading={loading}
+              setLoading={setLoading}
+              errors={errors}
+              setErrors={setErrors}
+            />
           )}
 
           {!success && step === 'form' && mode === 'login' && (
@@ -489,11 +523,17 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
               <GoogleBtn onClick={handleGoogleLogin} loading={loading} />
               <Divider />
               <ErrorBanner message={apiError} />
-              <Field label="Email address" type="email" placeholder="yourname@example.com" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} icon="send" error={errors.loginEmail} />
+              <Field
+                label="Email address" type="email" placeholder="yourname@example.com"
+                value={loginEmail} onChange={e => setLoginEmail(e.target.value)}
+                icon="send" error={errors.loginEmail}
+              />
               <SubmitBtn loading={loading}>Send OTP</SubmitBtn>
               <p style={{ textAlign: 'center', color: 'rgba(200,230,201,0.35)', fontSize: 12, marginTop: 18 }}>
                 Don't have an account?{' '}
-                <button type="button" onClick={() => switchMode('register')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#4ade80', fontSize: 12, fontFamily: "'Poppins', sans-serif", fontWeight: 600 }}>Create one free</button>
+                <button type="button" onClick={() => switchMode('register')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#4ade80', fontSize: 12, fontFamily: "'Poppins', sans-serif", fontWeight: 600 }}>
+                  Create one free
+                </button>
               </p>
             </form>
           )}
@@ -509,7 +549,11 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
                 <Field label="Full Name" placeholder="Ramesh Kumar" value={regName} onChange={e => setRegName(e.target.value)} icon="user" error={errors.regName} />
                 <Field label="Mobile Number" placeholder="9876543210" value={regPhone} onChange={e => setRegPhone(e.target.value)} icon="send" error={errors.regPhone} />
               </div>
-              <Field label="Email address" type="email" placeholder="yourname@example.com" value={regEmail} onChange={e => setRegEmail(e.target.value)} icon="send" error={errors.regEmail} />
+              <Field
+                label="Email address" type="email" placeholder="yourname@example.com"
+                value={regEmail} onChange={e => setRegEmail(e.target.value)}
+                icon="send" error={errors.regEmail}
+              />
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: 'block', marginBottom: 6, fontSize: 10, fontWeight: 600, letterSpacing: 1.4, color: 'rgba(200,230,201,0.45)', textTransform: 'uppercase', fontFamily: "'Poppins', sans-serif" }}>State</label>
                 <select value={regState} onChange={e => setRegState(e.target.value)} style={{ width: '100%', padding: '12px 14px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: 11, color: regState ? '#f0fdf4' : 'rgba(200,230,201,0.3)', fontFamily: "'Poppins', sans-serif", fontSize: 13, outline: 'none', cursor: 'pointer' }}>
@@ -523,7 +567,9 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
                 </label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
                   {crops.map(c => (
-                    <button key={c} type="button" onClick={() => setRegCrop(c === regCrop ? '' : c)} style={{ padding: '5px 12px', borderRadius: 999, cursor: 'pointer', border: `1px solid ${regCrop === c ? 'rgba(74,222,128,0.5)' : 'rgba(255,255,255,0.09)'}`, background: regCrop === c ? 'rgba(74,222,128,0.11)' : 'transparent', color: regCrop === c ? '#86efac' : 'rgba(200,230,201,0.45)', fontFamily: "'Poppins', sans-serif", fontSize: 12, transition: 'all 0.18s' }}>{c}</button>
+                    <button key={c} type="button" onClick={() => setRegCrop(c === regCrop ? '' : c)} style={{ padding: '5px 12px', borderRadius: 999, cursor: 'pointer', border: `1px solid ${regCrop === c ? 'rgba(74,222,128,0.5)' : 'rgba(255,255,255,0.09)'}`, background: regCrop === c ? 'rgba(74,222,128,0.11)' : 'transparent', color: regCrop === c ? '#86efac' : 'rgba(200,230,201,0.45)', fontFamily: "'Poppins', sans-serif", fontSize: 12, transition: 'all 0.18s' }}>
+                      {c}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -533,10 +579,13 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
               </p>
               <p style={{ textAlign: 'center', color: 'rgba(200,230,201,0.35)', fontSize: 12, marginTop: 10 }}>
                 Already have an account?{' '}
-                <button type="button" onClick={() => switchMode('login')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#4ade80', fontSize: 12, fontFamily: "'Poppins', sans-serif", fontWeight: 600 }}>Sign in</button>
+                <button type="button" onClick={() => switchMode('login')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#4ade80', fontSize: 12, fontFamily: "'Poppins', sans-serif", fontWeight: 600 }}>
+                  Sign in
+                </button>
               </p>
             </form>
           )}
+
         </div>
       </div>
 
