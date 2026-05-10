@@ -177,7 +177,8 @@ const DATAGOV_KEY = import.meta.env?.VITE_DATAGOV_API_KEY;
 // Routed through Vite proxy in vite.config.js:
 //   '/api/mandi'  →  'https://api.data.gov.in/resource/9ef84268-...'
 // Can also call direct (no CORS issue confirmed by debug test 6).
-const DATAGOV_BASE = '/api/mandi';
+const DATAGOV_BASE =
+  'https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070';
 
 // ─────────────────────────────────────────────────────────────
 // KEY FINDING FROM DEBUG:
