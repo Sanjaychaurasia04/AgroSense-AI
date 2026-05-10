@@ -53,22 +53,102 @@ const getSeverityLevel = (pH) => {
   return 'optimal';
 };
 
-const getCropIcon = (crop) => {
-  const icons = { Rice:"🌾", Wheat:"🌾", Tomato:"🍅", Cotton:"🌿", Maize:"🌽", Sugarcane:"🎋", Potato:"🥔" };
-  return icons[crop] || "🌱";
+// SVG crop icons — no emojis, clean vector marks
+const CropIcon = ({ crop }) => {
+  const icons = {
+    Rice: (
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="crop-svg-icon">
+        <path d="M10 2 C10 2 7 6 7 10 C7 14 10 18 10 18 C10 18 13 14 13 10 C13 6 10 2 10 2Z" stroke="currentColor" strokeWidth="1.4" fill="none"/>
+        <line x1="10" y1="2" x2="10" y2="18" stroke="currentColor" strokeWidth="1.4"/>
+        <line x1="8.2" y1="7" x2="10" y2="5.5" stroke="currentColor" strokeWidth="1.2"/>
+        <line x1="11.8" y1="7" x2="10" y2="5.5" stroke="currentColor" strokeWidth="1.2"/>
+        <line x1="7.5" y1="10" x2="10" y2="8.5" stroke="currentColor" strokeWidth="1.2"/>
+        <line x1="12.5" y1="10" x2="10" y2="8.5" stroke="currentColor" strokeWidth="1.2"/>
+      </svg>
+    ),
+    Wheat: (
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="crop-svg-icon">
+        <line x1="10" y1="18" x2="10" y2="3" stroke="currentColor" strokeWidth="1.4"/>
+        <ellipse cx="10" cy="5" rx="2.5" ry="1.5" stroke="currentColor" strokeWidth="1.2"/>
+        <ellipse cx="7" cy="8" rx="2.5" ry="1.5" transform="rotate(-30 7 8)" stroke="currentColor" strokeWidth="1.2"/>
+        <ellipse cx="13" cy="8" rx="2.5" ry="1.5" transform="rotate(30 13 8)" stroke="currentColor" strokeWidth="1.2"/>
+        <ellipse cx="7.5" cy="11.5" rx="2.5" ry="1.5" transform="rotate(-30 7.5 11.5)" stroke="currentColor" strokeWidth="1.2"/>
+        <ellipse cx="12.5" cy="11.5" rx="2.5" ry="1.5" transform="rotate(30 12.5 11.5)" stroke="currentColor" strokeWidth="1.2"/>
+      </svg>
+    ),
+    Tomato: (
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="crop-svg-icon">
+        <circle cx="10" cy="12" r="6" stroke="currentColor" strokeWidth="1.4"/>
+        <path d="M10 6 C10 6 10 3 10 2" stroke="currentColor" strokeWidth="1.4"/>
+        <path d="M8 4 C8 4 6.5 2.5 6 2" stroke="currentColor" strokeWidth="1.2"/>
+        <path d="M12 4 C12 4 13.5 2.5 14 2" stroke="currentColor" strokeWidth="1.2"/>
+        <path d="M7 4.5 C7 4.5 8 5.5 10 6" stroke="currentColor" strokeWidth="1.2"/>
+        <path d="M13 4.5 C13 4.5 12 5.5 10 6" stroke="currentColor" strokeWidth="1.2"/>
+      </svg>
+    ),
+    Cotton: (
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="crop-svg-icon">
+        <line x1="10" y1="18" x2="10" y2="8" stroke="currentColor" strokeWidth="1.4"/>
+        <circle cx="10" cy="6" r="2.2" stroke="currentColor" strokeWidth="1.3"/>
+        <circle cx="6"  cy="9" r="1.8" stroke="currentColor" strokeWidth="1.3"/>
+        <circle cx="14" cy="9" r="1.8" stroke="currentColor" strokeWidth="1.3"/>
+        <line x1="6"  y1="7.2" x2="8" y2="6.5" stroke="currentColor" strokeWidth="1"/>
+        <line x1="14" y1="7.2" x2="12" y2="6.5" stroke="currentColor" strokeWidth="1"/>
+      </svg>
+    ),
+    Maize: (
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="crop-svg-icon">
+        <rect x="7.5" y="5" width="5" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.3"/>
+        <line x1="10" y1="5" x2="10" y2="15" stroke="currentColor" strokeWidth="1"/>
+        <line x1="7.5" y1="8"  x2="12.5" y2="8"  stroke="currentColor" strokeWidth="0.9"/>
+        <line x1="7.5" y1="10" x2="12.5" y2="10" stroke="currentColor" strokeWidth="0.9"/>
+        <line x1="7.5" y1="12" x2="12.5" y2="12" stroke="currentColor" strokeWidth="0.9"/>
+        <path d="M10 5 C10 5 12 3 13 2" stroke="currentColor" strokeWidth="1.3"/>
+        <line x1="10" y1="15" x2="10" y2="18" stroke="currentColor" strokeWidth="1.3"/>
+      </svg>
+    ),
+    Sugarcane: (
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="crop-svg-icon">
+        <path d="M9 18 C9 18 9.5 12 10 8 C10.5 4 11 2 11 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+        <path d="M10 10 C10 10 13 9 14 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+        <path d="M9.5 13 C9.5 13 6.5 12 5.5 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+        <path d="M10 7 C10 7 13 6 14 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+        <path d="M9 15.5 C9 15.5 6 14.5 5 13.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+      </svg>
+    ),
+    Potato: (
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="crop-svg-icon">
+        <ellipse cx="10" cy="12" rx="6" ry="4.5" stroke="currentColor" strokeWidth="1.4"/>
+        <circle cx="7.5" cy="10.5" r="0.7" fill="currentColor"/>
+        <circle cx="12" cy="11"   r="0.7" fill="currentColor"/>
+        <circle cx="9.5" cy="13.5" r="0.7" fill="currentColor"/>
+        <path d="M10 7.5 C10 7.5 9 5 8.5 3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+        <path d="M10 7.5 C10 7.5 11.5 6 12.5 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+      </svg>
+    ),
+  };
+  return icons[crop] || (
+    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="crop-svg-icon">
+      <path d="M10 18 C10 18 10 10 10 8 C10 4 7 2 7 2 C7 2 9 5 10 8 C11 5 13 2 13 2 C13 2 10 4 10 8" stroke="currentColor" strokeWidth="1.4"/>
+    </svg>
+  );
 };
 
+// pH status indicator — colored dot + label, no emoji
+const PhStatusDot = ({ status }) => (
+  <span className={`ph-status-dot ${status}`} aria-hidden="true" />
+);
+
 const Fertilizer = () => {
-  const [ph, setPh]       = useState(6.5);
-  const [crop, setCrop]   = useState("Rice");
+  const [ph, setPh]           = useState(6.5);
+  const [crop, setCrop]       = useState("Rice");
   const [disease, setDisease] = useState("");
   const [showResults, setShowResults] = useState(false);
 
-  // ── Derived values — computed synchronously, no useEffect needed ──
-  const soilInfo    = useMemo(() => getSoilType(ph),      [ph]);
-  const fertInfo    = useMemo(() => getFertilizerInfo(ph), [ph]);
-  const npkValues   = useMemo(() => cropNPK[crop],         [crop]);
-  const severity    = useMemo(() => getSeverityLevel(ph),  [ph]);
+  const soilInfo  = useMemo(() => getSoilType(ph),       [ph]);
+  const fertInfo  = useMemo(() => getFertilizerInfo(ph),  [ph]);
+  const npkValues = useMemo(() => cropNPK[crop],          [crop]);
+  const severity  = useMemo(() => getSeverityLevel(ph),   [ph]);
 
   const diseaseInfo = useMemo(() => {
     if (!disease.trim()) return null;
@@ -80,19 +160,9 @@ const Fertilizer = () => {
     };
   }, [disease, soilInfo.status]);
 
-  const phStatusIcon = soilInfo.status === 'acidic' ? '⚠️' : soilInfo.status === 'alkaline' ? '⚡' : '✅';
-
-  // ── Handlers ──────────────────────────────────────────────────────
-  // Slider just updates ph — results re-compute automatically via useMemo
-  const handlePhChange = (e) => setPh(parseFloat(e.target.value));
-
-  // "Get Recommendation" button shows the result panel
-  const handleGetRecommendation = () => setShowResults(true);
-
-  const handleClear = () => {
-    setShowResults(false);
-    setDisease("");
-  };
+  const handlePhChange           = (e) => setPh(parseFloat(e.target.value));
+  const handleGetRecommendation  = () => setShowResults(true);
+  const handleClear              = () => { setShowResults(false); setDisease(""); };
 
   return (
     <div className="fertilizer-container">
@@ -116,7 +186,7 @@ const Fertilizer = () => {
             <div className="ph-value-container">
               <span className={`ph-value ${soilInfo.status}`}>{ph.toFixed(1)}</span>
               <span className="ph-status">{soilInfo.type.split(' ')[0]}</span>
-              <span className="ph-icon">{phStatusIcon}</span>
+              <PhStatusDot status={soilInfo.status} />
             </div>
             <input
               type="range" min="3" max="10" step="0.1" value={ph}
@@ -150,7 +220,8 @@ const Fertilizer = () => {
                   onClick={() => setCrop(c)}
                   className={`crop-btn ${crop === c ? 'active' : ''}`}
                 >
-                  {getCropIcon(c)} {c}
+                  <CropIcon crop={c} />
+                  {c}
                 </button>
               ))}
             </div>
@@ -284,9 +355,9 @@ const Fertilizer = () => {
                       <strong>{soilInfo.type.toLowerCase()}</strong> (pH {ph.toFixed(1)}):
                     </p>
                     <ul className="disease-list">
-                      <li><Icon name="arrow" size={12} /> {diseaseInfo.adjustment}</li>
-                      <li><Icon name="spray" size={12} /> {diseaseInfo.foliar}</li>
-                      <li><Icon name="leaf"  size={12} /> {diseaseInfo.organic}</li>
+                      <li><Icon name="arrow"  size={12} /> {diseaseInfo.adjustment}</li>
+                      <li><Icon name="spray"  size={12} /> {diseaseInfo.foliar}</li>
+                      <li><Icon name="leaf"   size={12} /> {diseaseInfo.organic}</li>
                     </ul>
                     <div className="disease-note">
                       <Icon name="info" size={12} /> {diseaseInfo.notes}

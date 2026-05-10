@@ -15,7 +15,7 @@ const videos = [
   {
     crop: "Rice",
     topic: "Cultivation Guide",
-    thumb: "🌾",
+    thumb: "",
     url: "https://youtu.be/_sSl86SOfzo?si=PvwcFuR9V2AGB3HW",
     videoId: "_sSl86SOfzo",
     description: "Complete rice cultivation techniques — from seed selection and nursery preparation to transplanting, water management, and harvesting.",
@@ -23,7 +23,7 @@ const videos = [
   {
     crop: "Wheat",
     topic: "Sowing & Irrigation",
-    thumb: "🌿",
+    thumb: "",
     url: "https://youtu.be/ZkCSGoPxATE?si=kmCdjqMDjb_ryiTs",
     videoId: "ZkCSGoPxATE",
     description: "Step-by-step guide to wheat sowing, irrigation scheduling, fertilizer application, and how to maximize yield in Rabi season.",
@@ -31,7 +31,7 @@ const videos = [
   {
     crop: "Tomato",
     topic: "Disease Management",
-    thumb: "🍅",
+    thumb: "",
     url: "https://youtu.be/NJJErPfQ-W0?si=er769JL_GcPHEUfZ",
     videoId: "NJJErPfQ-W0",
     description: "Identify and control common tomato diseases like early blight, late blight, and leaf curl virus with organic and chemical methods.",
@@ -39,7 +39,7 @@ const videos = [
   {
     crop: "Organic Farming",
     topic: "Techniques & Tips",
-    thumb: "🌱",
+    thumb: "",
     url: "https://youtu.be/dV9xmkFmOhU?si=tgHuz6D2fpPFs0EF",
     videoId: "dV9xmkFmOhU",
     description: "Learn organic farming practices — composting, vermicomposting, natural pest repellents, and how to get organic certification in India.",
@@ -47,7 +47,7 @@ const videos = [
   {
     crop: "Irrigation System",
     topic: "Drip & Sprinkler",
-    thumb: "💧",
+    thumb: "",
     url: "https://youtu.be/Z9HAy9EYKKs?si=ODgupZqoZeUn3jCK",
     videoId: "Z9HAy9EYKKs",
     description: "How to set up drip and sprinkler irrigation systems on your farm — reduce water usage by 50% and improve crop yield significantly.",
@@ -55,7 +55,7 @@ const videos = [
   {
     crop: "Pest Control",
     topic: "IPM Methods",
-    thumb: "🐛",
+    thumb: "",
     url: "https://youtu.be/-c6OuXMSWeE?si=vSEPPRLTFMuqqROa",
     videoId: "-c6OuXMSWeE",
     description: "Integrated Pest Management (IPM) techniques — identify common farm pests, use biological controls, and apply pesticides only when necessary.",

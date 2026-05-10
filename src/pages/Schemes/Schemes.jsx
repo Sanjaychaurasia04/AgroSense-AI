@@ -13,7 +13,7 @@ const Schemes = () => {
       name: "PM Fasal Bima Yojana (PMFBY)",
       category: "Insurance",
       state: "All India",
-      deadline: "March 31, 2025",
+      deadline: "August 14, 2025",
       benefit: "Up to ₹2 lakh crop insurance coverage at subsidized premium of 2% for Kharif crops",
       link: "https://www.pmfby.gov.in/",
       about: `PMFBY provides financial support to farmers suffering crop loss or damage due to unforeseen events like floods, drought, pests, or diseases. Farmers pay a very low premium — just 2% for Kharif crops, 1.5% for Rabi crops, and 5% for commercial crops — and the rest is covered by the government. Claims are settled quickly using satellite and drone technology. It covers pre-sowing to post-harvest losses, including losses due to prevented sowing. Any farmer growing notified crops in notified areas is eligible — both loanee and non-loanee farmers can apply through their bank or CSC center.`,
@@ -111,8 +111,8 @@ const Schemes = () => {
             )}
 
             <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-              <span style={{ color: theme.mist, fontSize: 12 }}>📍 {s.state}</span>
-              <span style={{ color: theme.mist, fontSize: 12 }}>⏰ Deadline: {s.deadline}</span>
+              <span style={{ color: theme.mist, fontSize: 12 }}> {s.state}</span>
+              <span style={{ color: theme.mist, fontSize: 12 }}> Deadline: {s.deadline}</span>
               <a
                 href={s.link}
                 target="_blank"

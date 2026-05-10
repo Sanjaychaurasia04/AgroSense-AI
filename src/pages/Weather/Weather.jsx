@@ -6,6 +6,13 @@ import Icon from '../../components/common/Icon';
 import { theme } from '../../styles/theme';
 import { getRealWeather, getWeatherByCoords } from '../../api/api';
 
+const alertIconMap = {
+  danger:  "alert",
+  warning: "sun",
+  info:    "rain",
+  good:    "seedling",
+};
+
 const Weather = () => {
   const [location, setLocation] = useState("");
   const [weather, setWeather] = useState(null);
@@ -64,27 +71,27 @@ const Weather = () => {
     const conditionLower = condition.toLowerCase();
 
     if (temp > 38) return {
-      type: "danger", icon: "🔥", title: "Extreme Heat Warning",
+      type: "danger", title: "Extreme Heat Warning",
       message: "Temperature above 38°C! Irrigate immediately, provide shade, postpone transplanting, monitor for wilting.",
       actions: ["Irrigate immediately", "Apply mulch", "Provide shade"]
     };
     if (temp > 35) return {
-      type: "warning", icon: "☀️", title: "Heat Stress Alert",
+      type: "warning", title: "Heat Stress Alert",
       message: "High temperature: Irrigate in morning/evening. Sensitive crops need shade. Check soil moisture daily.",
       actions: ["Evening irrigation", "Shade netting", "Monitor moisture"]
     };
     if (temp <= 10) return {
-      type: "warning", icon: "❄️", title: "Cold Wave Alert",
+      type: "warning", title: "Cold Wave Alert",
       message: "Low temperature risk: Cover nursery beds with plastic. Use mulch to protect roots. Harvest sensitive vegetables.",
       actions: ["Cover crops", "Apply mulch", "Harvest ripe produce"]
     };
     if (temp < 15) return {
-      type: "info", icon: "🌡️", title: "Cool Weather Advisory",
+      type: "info", title: "Cool Weather Advisory",
       message: "Moderate temperatures: Good for cool-season crops. Protect tender seedlings if temperature drops further.",
       actions: ["Protect seedlings", "Delay heat-loving crops"]
     };
     if (temp > 20 && temp < 30 && humidity > 75) return {
-      type: "warning", icon: "🍄", title: "Fungal Disease Risk",
+      type: "warning", title: "Fungal Disease Risk",
       message: `High humidity (${humidity}%) — ideal for fungal diseases. Apply preventive fungicide on tomatoes, potatoes, grapes.`,
       actions: ["Apply fungicide", "Improve airflow", "Monitor closely"]
     };
@@ -92,7 +99,6 @@ const Weather = () => {
       const heavy = conditionLower.includes('heavy') || conditionLower.includes('thunderstorm');
       return {
         type: heavy ? "danger" : "info",
-        icon: heavy ? "⚠️" : "☔",
         title: heavy ? "Heavy Rain Warning" : "Rain Expected",
         message: heavy
           ? "Heavy rain: Check drainage, harvest mature crops immediately, secure polytunnels."
@@ -103,7 +109,7 @@ const Weather = () => {
       };
     }
     return {
-      type: "good", icon: "🌱", title: "Optimal Farming Conditions",
+      type: "good", title: "Optimal Farming Conditions",
       message: "Weather is favorable for all farming activities — sowing, irrigation, fertilizer, and spraying.",
       actions: ["Sowing", "Irrigation", "Fertilizer application", "Spraying"]
     };
@@ -118,6 +124,7 @@ const Weather = () => {
     good:    { bg: `${theme.leaf}22`,  border: theme.sprout },
   };
   const alertColors = alertColorMap[alert?.type] ?? alertColorMap.good;
+  const alertIconColor = alertColorMap[alert?.type]?.border ?? theme.sprout;
 
   return (
     <div>
@@ -165,7 +172,7 @@ const Weather = () => {
       {error && (
         <Card style={{ background: `${theme.alert}22`, border: `1px solid ${theme.alert}`, marginBottom: 20, padding: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 24 }}>⚠️</span>
+            <Icon name="alert" size={20} color={theme.alert} />
             <p style={{ color: theme.alert, margin: 0 }}>{error}</p>
           </div>
         </Card>
@@ -204,9 +211,12 @@ const Weather = () => {
             </Card>
 
             <Card style={{ padding: 24 }}>
-              <p style={{ color: theme.wheat, fontWeight: 700, marginBottom: 16, fontSize: 14, letterSpacing: 1 }}>
-                {alert.icon} TODAY'S FARMING ALERT
-              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <Icon name={alertIconMap[alert?.type] ?? "seedling"} size={16} color={alertIconColor} />
+                <p style={{ color: theme.wheat, fontWeight: 700, fontSize: 14, letterSpacing: 1, margin: 0 }}>
+                  TODAY'S FARMING ALERT
+                </p>
+              </div>
               <div style={{
                 background: alertColors.bg, borderRadius: 12, padding: 20,
                 borderLeft: `4px solid ${alertColors.border}`, marginBottom: 16
@@ -240,7 +250,10 @@ const Weather = () => {
                 <p style={{ color: theme.mist, fontSize: 13, fontWeight: 600, marginBottom: 12 }}>{f.day}</p>
                 <Icon name={f.icon} size={32} color={f.icon === "sun" ? theme.wheat : f.icon === "rain" ? theme.rain : theme.mist} />
                 <p style={{ color: theme.cream, fontSize: 28, fontWeight: 700, margin: "12px 0 4px" }}>{f.temp}°</p>
-                <p style={{ color: theme.rain, fontSize: 13, marginBottom: 12 }}>🌧️ {f.rain}% rain</p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 12 }}>
+                  <Icon name="rain" size={12} color={theme.rain} />
+                  <p style={{ color: theme.rain, fontSize: 13, margin: 0 }}>{f.rain}% rain</p>
+                </div>
                 <p style={{ color: theme.mist, fontSize: 12, lineHeight: 1.5, background: `${theme.earth}33`, padding: 8, borderRadius: 8 }}>
                   {f.advice}
                 </p>
@@ -251,28 +264,28 @@ const Weather = () => {
           {/* Quick Tips */}
           <Card style={{ marginTop: 24, padding: 20, background: `${theme.earth}33` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-              <span style={{ fontSize: 20 }}>💡</span>
-              <p style={{ color: theme.wheat, fontWeight: 600 }}>Quick Tips Based on Weather</p>
+              <Icon name="seedling" size={18} color={theme.sprout} />
+              <p style={{ color: theme.wheat, fontWeight: 600, margin: 0 }}>Quick Tips Based on Weather</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
               {weather.temp > 30 && (
                 <div style={{ fontSize: 13, color: theme.cream, opacity: 0.9 }}>
-                  • Irrigate in early morning or evening to reduce evaporation
+                  Irrigate in early morning or evening to reduce evaporation
                 </div>
               )}
               {weather.humidity > 70 && (
                 <div style={{ fontSize: 13, color: theme.cream, opacity: 0.9 }}>
-                  • Check for powdery mildew on cucurbits and grapes
+                  Check for powdery mildew on cucurbits and grapes
                 </div>
               )}
               {weather.forecast?.some(f => f.rain > 60) && (
                 <div style={{ fontSize: 13, color: theme.cream, opacity: 0.9 }}>
-                  • Harvest mature vegetables before heavy rain
+                  Harvest mature vegetables before heavy rain
                 </div>
               )}
               {weather.temp < 20 && (
                 <div style={{ fontSize: 13, color: theme.cream, opacity: 0.9 }}>
-                  • Good time for planting leafy vegetables
+                  Good time for planting leafy vegetables
                 </div>
               )}
             </div>
