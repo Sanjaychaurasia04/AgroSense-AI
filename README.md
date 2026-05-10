@@ -345,47 +345,122 @@ POST /predict
 ```
 AgroSense-AI/
 │
-├── 📁 backend/                    # Crop recommendation ML model + scripts
+├── 📁 backend/                              # Node.js + Express REST API
+│   ├── 📁 config/
+│   │   └── db.js                            # MongoDB Atlas connection (Mongoose)
+│   │
+│   ├── 📁 models/                           # Mongoose schemas → MongoDB collections
+│   │   ├── Conversation.js                  # conversations collection
+│   │   ├── CropRecommendation.js            # croprecommendations collection
+│   │   ├── Detection.js                     # detections collection
+│   │   └── User.js                          # users collection
+│   │
+│   ├── 📁 routes/                           # Express route handlers
+│   │   ├── community.routes.js              # Community feature endpoints
+│   │   ├── conversations.routes.js          # Chatbot conversation endpoints
+│   │   ├── detections.js                    # Disease detection endpoints
+│   │   ├── recommendations.js               # Crop recommendation endpoints
+│   │   └── users.js                         # User auth & profile endpoints
+│   │
+│   ├── .env                                 # 🔒 Backend secrets (MONGODB_URI, etc.)
+│   ├── package-lock.json
+│   ├── package.json                         # Backend dependencies
+│   ├── server.js                            # Express app entry point
+│   └── vercel.json                          # Vercel backend deployment config
 │
-├── 📁 public/
-│   ├── favicon.ico
-│   └── og-image.png               # Open Graph image for link previews
+├── 📁 src/                                  # React 19 frontend (Vite SPA)
+│   │
+│   ├── 📁 assets/                           # Static images, SVGs, icons
+│   │
+│   ├── 📁 components/                       # Reusable UI components
+│   │   ├── 📁 Auth/
+│   │   │   └── PrivateRoute.jsx             # Protected route wrapper (Auth0)
+│   │   │
+│   │   ├── 📁 common/                       # Generic shared UI primitives
+│   │   │   ├── Badge.jsx
+│   │   │   ├── Button.jsx
+│   │   │   ├── Card.jsx
+│   │   │   └── Icon.jsx
+│   │   │
+│   │   ├── 📁 context/                      # React context providers
+│   │   │   ├── AuthContext.jsx              # Auth0 user state context
+│   │   │   └── LocationContext.jsx          # User location/weather context
+│   │   │
+│   │   ├── 📁 layout/                       # Page shell components
+│   │   │   ├── Footer.jsx
+│   │   │   ├── header.css
+│   │   │   ├── Header.jsx
+│   │   │   ├── Layout.jsx                   # Root layout wrapper
+│   │   │   ├── Navbar.jsx
+│   │   │   └── Sidebar.jsx
+│   │   │
+│   │   └── 📁 navigation/
+│   │       ├── NavItems.jsx                 # Navigation link definitions
+│   │       └── AuthSync.jsx                 # Syncs Auth0 user → MongoDB users
+│   │
+│   ├── 📁 pages/                            # Route-level page components
+│   │   ├── 📁 Auth/
+│   │   │   └── Authpage.jsx                 # Login / signup page
+│   │   │
+│   │   ├── 📁 Calender/
+│   │   │   └── CropCalendar.jsx             # Crop planting calendar
+│   │   │
+│   │   ├── 📁 Chatbot/
+│   │   │   └── Chatbot.jsx                  # AI farming chatbot page
+│   │   │
+│   │   ├── 📁 Community/
+│   │   │   └── Community.jsx                # Farmer community forum
+│   │   │
+│   │   ├── 📁 CropAdvisory/
+│   │   │   └── CropAdvisory.jsx             # Crop advisory dashboard
+│   │   │
+│   │   ├── 📁 Disease/
+│   │   │   ├── DiagnosisResult.css
+│   │   │   ├── DiagnosisResult.jsx          # Detection result display
+│   │   │   ├── DiseaseDetection.css
+│   │   │   ├── DiseaseDetection.jsx         # Plant disease detection page
+│   │   │   └── UploadBox.jsx                # Leaf image drag-and-drop uploader
+│   │   │
+│   │   ├── 📁 Fertilizer/
+│   │   │   ├── Fertilizer.css
+│   │   │   └── Fertilizer.jsx               # Fertilizer recommendation page
+│   │   │
+│   │   ├── 📁 landing/
+│   │   │   └── landing.jsx                  # Home / landing page
+│   │   │
+│   │   ├── 📁 Market/
+│   │   │   ├── Market.css
+│   │   │   └── Market.jsx                   # Crop market prices page
+│   │   │
+│   │   ├── 📁 Schemes/
+│   │   │   └── Schemes.jsx                  # Government agricultural schemes
+│   │   │
+│   │   ├── 📁 Videos/
+│   │   │   └── Videos.jsx                   # Farming tutorial videos
+│   │   │
+│   │   └── 📁 Weather/
+│   │       └── Weather.jsx                  # Real-time weather dashboard
+│   │
+│   ├── 📁 styles/                           # Global style definitions
+│   │   ├── global.css                       # App-wide base styles
+│   │   └── theme.js                         # Design tokens / theme config
+│   │
+│   ├── 📁 utils/                            # Helpers and API wrappers
+│   │   └── db.js                            # Axios client / API base config
+│   │
+│   ├── App.css                              # Root component styles
+│   ├── App.jsx                              # Root component — React Router config
+│   ├── index.css                            # Tailwind directives + resets
+│   └── main.jsx                             # ReactDOM entry + Auth0Provider
 │
-├── 📁 src/
-│   ├── 📁 assets/                 # Static images, SVG icons
-│   │
-│   ├── 📁 components/             # Reusable UI components
-│   │   ├── Navbar.jsx             # Top navigation bar
-│   │   ├── Footer.jsx             # Site footer
-│   │   ├── ChatBot.jsx            # Floating AI chatbot widget
-│   │   ├── ImageUploader.jsx      # Drag-and-drop leaf photo uploader
-│   │   ├── ResultCard.jsx         # Disease prediction result display
-│   │   ├── WeatherCard.jsx        # Single weather metric card
-│   │   └── LoadingSpinner.jsx     # Loading / inference state indicator
-│   │
-│   ├── 📁 pages/                  # Route-level page components
-│   │   ├── Home.jsx               # Landing page
-│   │   ├── DiseaseDetection.jsx   # Plant disease detection
-│   │   ├── CropRecommendation.jsx # Crop recommendation engine
-│   │   ├── Weather.jsx            # Weather dashboard
-│   │   └── About.jsx              # About the project
-│   │
-│   ├── 📁 utils/                  # Helpers and API wrappers
-│   │   ├── api.js                 # All external API calls
-│   │   └── helpers.js             # Formatters, validators, converters
-│   │
-│   ├── App.jsx                    # Root component — router config
-│   ├── main.jsx                   # ReactDOM entry point
-│   └── index.css                  # Global styles + Tailwind directives
-│
-├── server.js                      # Express backend — API proxy + auth
-├── .env                           # 🔒 Local secrets — never commit
-├── .env.example                   # ✅ Safe template — commit this
+├── .env                                     # 🔒 Frontend secrets — never commit
 ├── .gitignore
-├── index.html
-├── package.json
-├── vite.config.js
-└── README.md
+├── eslint.config.js                         # ESLint flat config
+├── index.html                               # Vite HTML shell
+├── package-lock.json
+├── package.json                             # All dependencies + npm scripts
+├── README.md
+└── vite.config.js                           # Vite build + dev server config
 ```
 
 ---
