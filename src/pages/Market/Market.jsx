@@ -164,8 +164,8 @@ const Market = () => {
           </h2>
           <p style={{ color:theme.mist, opacity:0.65, fontSize:13 }}>
             {isDemo
-              ? '⚠️ Showing demo data — API unavailable'
-              : `✅ Live · AGMARKNET · Data date: ${dataDate ?? '—'} · Fetched at ${lastFetched?.toLocaleTimeString('en-IN') ?? ''}`
+              ? ' Showing demo data — API unavailable'
+              : ` Live · AGMARKNET · Data date: ${dataDate ?? '—'} · Fetched at ${lastFetched?.toLocaleTimeString('en-IN') ?? ''}`
             }
           </p>
         </div>

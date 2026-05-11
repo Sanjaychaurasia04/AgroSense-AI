@@ -206,12 +206,12 @@ const DiseaseDetection = ({ user }) => {
             treatmentAdvice: treatmentText || 'Regular monitoring and proper plant care recommended',
             imageUrl:        '',
           });
-          console.log('✅ Saved to DB:', diseaseLabel, confidence100.toFixed(2) + '%');
+          console.log(' Saved to DB:', diseaseLabel, confidence100.toFixed(2) + '%');
         } catch (dbErr) {
-          console.error('⚠️ DB save failed:', dbErr.message);
+          console.error(' DB save failed:', dbErr.message);
         }
       } else {
-        console.warn('⚠️ No user logged in — detection not saved');
+        console.warn(' No user logged in — detection not saved');
       }
 
       setTimeout(() => {

@@ -384,18 +384,18 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
       await syncUser({ sub: u.sub, name: u.name, email: u.email, picture: u.picture });
       // Persist auth0Id for API calls throughout the rest of the app
       if (u.sub) localStorage.setItem('auth0Id', u.sub);
-      console.log('✅ OTP user synced to MongoDB');
+      console.log(' OTP user synced to MongoDB');
 
       // For new registrations, also persist the extra profile fields
       if (mode === 'register' && u.sub) {
         await updateUser(u.sub, {
           location: { city: '', state: regState || '' },
         });
-        console.log('✅ Registration profile saved');
+        console.log(' Registration profile saved');
       }
     } catch (err) {
       // DB failure must NOT block the login — just log it
-      console.error('⚠️ Failed to sync OTP user to DB:', err);
+      console.error(' Failed to sync OTP user to DB:', err);
     }
 
     setAuthUser(u);
