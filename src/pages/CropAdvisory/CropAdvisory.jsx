@@ -4,9 +4,7 @@ import Weather from '../Weather/Weather';
 import Fertilizer from '../Fertilizer/Fertilizer';
 import CropRecommend from '../CropRecommend/CropRecommend';
 
-// src/pages/CropAdvisory/CropAdvisory.jsx
-
-const API_URL = 'https://crop-recommendation-blip.onrender.com/predict';
+const CROP_API_ENDPOINT = import.meta.env.VITE_CROP_API_URL;
 
 const CropAdvisory = () => {
   const [loading,  setLoading]  = useState(false);
@@ -19,7 +17,7 @@ const CropAdvisory = () => {
     setResult(null);
 
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch(CROP_API_ENDPOINT, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(payload),
