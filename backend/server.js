@@ -16,8 +16,9 @@ import conversationRoutes from "./routes/conversations.routes.js";
 import communityRoutes from "./routes/community.routes.js";
 
 // ── Auth0 config ──────────────────────────────────────────────
-const AUTH0_DOMAIN = "dev-zl6sofbd5sbrdbde.us.auth0.com";
-const AUTH0_CLIENT_ID = "yXHFS5b5pvSMFfeu76iCUJCW7kM5ffwH";
+// ── Auth0 config ──────────────────────────────────────────────
+const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
+const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID;
 
 const app = express();
 
