@@ -510,42 +510,6 @@ npm run start
 
 ---
 
-## 🔑 Environment Variables
-
-Copy `.env.example` to `.env` and fill in every value. **Never commit `.env` to version control.**
-
-```bash
-cp .env.example .env
-```
-
-```env
-# ── Disease Detection (Hugging Face Flask API) ──────────────────────────────
-# Your Hugging Face Space URL
-VITE_HF_API_ENDPOINT=https://your-username-your-space-name.hf.space
-
-# Your HF Access Token → huggingface.co → Settings → Access Tokens
-VITE_HF_API_KEY=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-# ── Weather Dashboard ────────────────────────────────────────────────────────
-# Free tier key from openweathermap.org/api
-VITE_WEATHER_API_KEY=your_openweathermap_key_here
-
-# ── AI Chatbot ───────────────────────────────────────────────────────────────
-# API key for your LLM provider (Google Gemini / OpenAI / Groq)
-VITE_CHATBOT_API_KEY=your_llm_api_key_here
-
-# ── Auth0 Authentication ─────────────────────────────────────────────────────
-VITE_AUTH0_DOMAIN=your-tenant.auth0.com
-VITE_AUTH0_CLIENT_ID=your_auth0_client_id
-
-# ── MongoDB (used by Express backend) ────────────────────────────────────────
-MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/agrosense
-```
-
-> ⚠️ **Security note:** `VITE_` prefixed variables are bundled into the browser JS bundle and are visible in DevTools. Sensitive keys (LLM, database) should be called only from the Express backend (`server.js`), which acts as a secure proxy. Never call paid APIs directly from the frontend.
-
----
-
 ## 🖥️ Backend & API Proxy
 
 The project includes an **Express 5 backend** (`server.js`) that serves two purposes:
